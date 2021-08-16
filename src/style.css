@@ -7,7 +7,6 @@ body {
 html {
     box-sizing: border-box;
     font-family: sans-serif;
-    transition: opacity 0ms 350ms ease-in-out;
 }
 
 *, *::before, *::after {
@@ -27,4 +26,18 @@ html {
     margin: 0 0 0 20px ;
     padding-top: 20px;
     font-size: 48px;
+}
+
+.sidebar-container {
+    height: 100vh;
+    width: 450px;
+    outline: 1px solid red;
+    position: absolute;
+}
+
+.project-container {
+    outline: 1px solid red;
+    width: 1200px;
+    height: 100vh;
+    margin-left: 450px;
 }
