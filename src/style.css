@@ -1,3 +1,30 @@
 body {
-    background-color: blue;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+
+html {
+    box-sizing: border-box;
+    font-family: sans-serif;
+    transition: opacity 0ms 350ms ease-in-out;
+}
+
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+
+
+.navbar {
+    background-color: rgba(18, 18, 18, 1);
+    height: 100px;
+    width: 100%;
+}
+
+.navbar h1 {
+    color: white;
+    margin: 0 0 0 20px ;
+    padding-top: 20px;
+    font-size: 48px;
 }
