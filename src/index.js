@@ -1,9 +1,18 @@
 import './style.css';
+import createInbox from './sidebar-modules/inbox'
 
 
 const domWriter = (() => {
    
-
+    function loadPage(id) {
+        switch(id) {
+            case "inbox":
+                createInbox(id)
+                break;
+        }
+    };
+    
+    return {loadPage};
 
 })();
 
@@ -23,6 +32,8 @@ const tabSwitcher = (() => {
 
         const tab = document.getElementById(id)
         tab.classList.add('active')
+        domWriter.loadPage(id)
     }
+
 
 })();
