@@ -19,13 +19,21 @@ html {
     background-color: rgba(18, 18, 18, 1);
     height: 100px;
     width: 100%;
+    display: flex;
+    justify-content: center;
 }
 
 .navbar h1 {
+    display: block;
     color: white;
     margin: 0 0 0 20px ;
     padding-top: 20px;
     font-size: 48px;
+    margin-right: auto;
+}
+
+.navbar button {
+    margin-right: auto;
 }
 
 .sidebar-container {
@@ -47,15 +55,28 @@ html {
     cursor: pointer;
 }
 
+.active {
+    font-weight: 800;
+}
+
 
 .add-project {
     margin: 20px 0px 0px 40px;
     width: 50%;
 }
 
-.project-container {
+.main {
     outline: 1px solid red;
     width: 1200px;
     height: 100vh;
     margin-left: 450px;
+}
+
+
+/* INBOX */
+
+.title {
+    font-size: 64px;
+    margin: 0px 0px 10px 48px;
+    padding-top: 48px;
 }

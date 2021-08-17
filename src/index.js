@@ -1,23 +1,70 @@
 import './style.css';
 import createInbox from './sidebar-modules/inbox'
+import createToday from './sidebar-modules/today'
+import createUpcoming from './sidebar-modules/upcoming'
+
+
+const taskFactory = (title, desc, dueDate, priority) => {
+    return {title, desc, dueDate, priority}
+}
+
 
 
 const domWriter = (() => {
-   
+    const main = document.querySelector('.main')
     function loadPage(id) {
+        if (main.id === id) {
+            return
+        }
+        removePage(main)
         switch(id) {
             case "inbox":
-                createInbox(id)
+                createInbox(main)
+                break;
+            case "today":
+                createToday(main)
+                break;
+            case "upcoming":
+                createUpcoming(main)
                 break;
         }
     };
+
+    function removePage(main) {
+        while(main.firstChild) {
+            main.removeChild(main.lastChild)
+        }
+    }
+
+    function createTaskForm() {
+        //need more parameters and css
+        //look up date-fns docs for data info
+        let checkForm = document.querySelector('form')
+        if (!!checkForm) {
+            return
+        }
+        const form = document.createElement('form')
+        createInput("Title", form)
+        createInput("Description", form)
+        main.appendChild(form)
+        
+    }
+
+    function createInput(name, element) {
+        const input = document.createElement("input")
+        input.required = true
+        input.setAttribute('type', 'text')
+        input.setAttribute('name', name)
+        input.setAttribute('placeholder', name)
+        element.appendChild(input)
+    }
     
-    return {loadPage};
+    return {loadPage, createTaskForm};
 
 })();
 
 
-const tabSwitcher = (() => {
+const appLogic = (() => {
     const sideBar = document.querySelectorAll('.sidebar-items')
     sideBar.forEach(item => {
         item.addEventListener('click', () => {
@@ -35,5 +82,15 @@ const tabSwitcher = (() => {
         domWriter.loadPage(id)
     }
 
+    const addBtn = document.querySelector('.add-task')
+    addBtn.addEventListener('click', () => {
+        domWriter.createTaskForm()
+    })
 
+    //temp for testing
+    return {switchTab};
 })();
+
+
+
+appLogic.switchTab("inbox")
