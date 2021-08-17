@@ -33,6 +33,24 @@ html {
     width: 450px;
     outline: 1px solid red;
     position: absolute;
+    display: flex;
+    flex-flow: column;
+}
+
+.sidebar-items {
+    font-size: 32px;
+    font-weight: 100;
+    margin: 20px 0px 0px 40px;
+}
+
+.sidebar-items:hover {
+    cursor: pointer;
+}
+
+
+.add-project {
+    margin: 20px 0px 0px 40px;
+    width: 50%;
 }
 
 .project-container {
