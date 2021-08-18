@@ -2,11 +2,17 @@ import './style.css';
 import createInbox from './sidebar-modules/inbox'
 import createToday from './sidebar-modules/today'
 import createUpcoming from './sidebar-modules/upcoming'
+import format from 'date-fns/format';
 
 
 const taskFactory = (title, desc, dueDate, priority) => {
     return {title, desc, dueDate, priority}
 }
+
+
+
+
+
 
 
 
@@ -58,6 +64,14 @@ const domWriter = (() => {
         input.setAttribute('placeholder', name)
         element.appendChild(input)
     }
+
+    function getDate() {
+        const time = document.querySelector('.time')
+        const date = new Date()
+        let today = `${date.getDay()}/${date.getMonth()}/${date.getFullYear()}`
+        time.textContent = today
+    }
+    getDate()
     
     return {loadPage, createTaskForm};
 
