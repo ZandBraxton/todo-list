@@ -1,16 +1,17 @@
 import './style.css';
-import createInbox from './sidebar-modules/inbox'
-import createToday from './sidebar-modules/today'
-import createUpcoming from './sidebar-modules/upcoming'
+
 import format from 'date-fns/format';
 
 
+const tasks = []
+
 class taskFactory {
     constructor(title, desc, dueDate, priority) {
-        return {title, desc, dueDate, priority}
+        const complete = false
+        let project = "inbox"
+        return {title, desc, dueDate, priority, complete, project}
     }
 }
-
 
 const domWriter = (() => {
     const main = document.querySelector('.main')
@@ -18,23 +19,25 @@ const domWriter = (() => {
         if (main.id === id) {
             return
         }
-        removePage(main)
-        switch(id) {
-            case "inbox":
-                createInbox(main)
-                break;
-            case "today":
-                createToday(main)
-                break;
-            case "upcoming":
-                createUpcoming(main)
-                break;
-        }
+        main.id = id
+        createHeader(id)
+        renderList(tasks)
     };
 
-    function removePage(main) {
-        while(main.firstChild) {
-            main.removeChild(main.lastChild)
+    function createHeader(id) {
+        const title = document.querySelector('.title')
+        title.textContent = id
+    }
+
+    function renderList(tasks) {
+        const list = document.querySelector('.list')
+        while (list.firstChild) {
+            list.removeChild(list.lastChild)
+        }
+        for (let obj in tasks) {
+            let task = document.createElement('div')
+            task.textContent = tasks[obj]['title']
+            list.appendChild(task)
         }
     }
 
@@ -51,13 +54,10 @@ const domWriter = (() => {
         createInput("Submit", 'submit', form)
         form.addEventListener('submit', (e) => {
             e.preventDefault();
-            let newTask = new taskFactory(
-                form.elements[0].value,
-                form.elements[1].value, 
-                form.elements[2].value, 
-                form.elements[3].value)
-                console.log(newTask)
-                main.removeChild(form)
+            appLogic.appendTask(form)
+            renderList(tasks)
+            main.removeChild(form)
+                
         })
         main.appendChild(form)
         
@@ -125,10 +125,19 @@ const appLogic = (() => {
         domWriter.createTaskForm()
     })
 
+    function appendTask(form) {
+        let newTask = new taskFactory(
+            form.elements[0].value,
+            form.elements[1].value, 
+            form.elements[2].value, 
+            form.elements[3].value)
+            tasks.push(newTask)
+    }
+
     //temp for testing
-    return {switchTab};
+    return {switchTab, appendTask};
 })();
 
 
 
-appLogic.switchTab("inbox")
+appLogic.switchTab("Inbox")
