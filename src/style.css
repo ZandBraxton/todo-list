@@ -80,6 +80,16 @@ html {
     margin-left: 450px;
 }
 
+.list {
+    outline: 1px solid red;
+}
+
+.task-list {
+    display: flex;
+    margin: auto;
+    justify-content: space-evenly;
+}
+
 
 /* INBOX */
 

@@ -2,7 +2,6 @@
 
 each todo should have these properties
 Title
-Desc
 DueDate
 Priority level
 Notes
@@ -19,3 +18,14 @@ save data to local-storage
 
 check out date-fns library
 browse other libraries from npm
+
+
+store each task in an array
+allow users to check off a task, changing its sort value
+allow users to delete the task from the array
+allow users to move it to projects, which create their own array
+
+get rid of desc
+have a clickable option to bring up notes
+
+style the list as a grid

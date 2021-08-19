@@ -2,14 +2,30 @@ import './style.css';
 
 import format from 'date-fns/format';
 
+function getDate() {
+    const timeElapsed = Date.now()
+    const today = format(new Date(timeElapsed), 'P')
+    return today
+}
 
-const tasks = []
+
+const test = {
+    title:"name", desc:"description here", dueDate:"05/16/2021", priority:"2"
+}
+
+const test2 = {
+    title:"name", desc:"description here", dueDate:"8/19/2021", priority:"2"
+}
+const tasks = [test, test2]
 
 class taskFactory {
     constructor(title, desc, dueDate, priority) {
-        const complete = false
-        let project = "inbox"
-        return {title, desc, dueDate, priority, complete, project}
+        this.title = title
+        this.desc = desc
+        const date = format(new Date(dueDate), 'P')
+        this.dueDate = date
+        this.priority = priority
+        this.complete = false
     }
 }
 
@@ -21,7 +37,7 @@ const domWriter = (() => {
         }
         main.id = id
         createHeader(id)
-        renderList(tasks)
+        renderList(tasks, id)
     };
 
     function createHeader(id) {
@@ -29,17 +45,55 @@ const domWriter = (() => {
         title.textContent = id
     }
 
-    function renderList(tasks) {
+    function renderList(tasks, id) {
         const list = document.querySelector('.list')
         while (list.firstChild) {
             list.removeChild(list.lastChild)
         }
-        for (let obj in tasks) {
-            let task = document.createElement('div')
-            task.textContent = tasks[obj]['title']
-            list.appendChild(task)
+        if (id === "Inbox") {
+            for (let obj in tasks) {
+                let task = document.createElement('div')
+                task.classList.add('task-list')
+                createTaskContent(task, tasks, obj, 'title')
+                createTaskContent(task, tasks, obj, 'desc')
+                createTaskContent(task, tasks, obj, 'dueDate')
+                createTaskContent(task, tasks, obj, 'priority')
+                list.appendChild(task)
+            }
+        } else if (id === "Today") {
+            const time = getDate()
+            for (let obj in tasks) {
+                if (tasks[obj]['dueDate'] === time) {
+                    let task = document.createElement('div')
+                    task.classList.add('task-list')
+                    createTaskContent(task, tasks, obj, 'title')
+                    createTaskContent(task, tasks, obj, 'desc')
+                    createTaskContent(task, tasks, obj, 'dueDate')
+                    createTaskContent(task, tasks, obj, 'priority')
+                    list.appendChild(task)
+                }
+                
+            }
+        } else {
+            const time = getDate()
+            for (let obj in tasks) {
+                
+                //if statement if time is within a week of the current date
+                let task = document.createElement('div')
+                task.textContent = tasks[obj]['dueDate']
+                list.appendChild(task)
+            }
         }
     }
+
+    function createTaskContent(task, tasks, obj, key) {
+        let content = document.createElement('div')
+        content.classList.add('task-item')
+        content.textContent = tasks[obj][key]  
+        task.appendChild(content)
+    }
+       
+    
 
     function createTaskForm() {
         let checkForm = document.querySelector('form')
@@ -55,7 +109,7 @@ const domWriter = (() => {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             appLogic.appendTask(form)
-            renderList(tasks)
+            renderList(tasks, main.id)
             main.removeChild(form)
                 
         })
@@ -89,15 +143,14 @@ const domWriter = (() => {
     }
 
 
-    function getDate() {
+    function renderDate() {
         const time = document.querySelector('.time')
-        const date = new Date()
-        let today = `${date.getDay()}/${date.getMonth()}/${date.getFullYear()}`
-        time.textContent = today
+        time.textContent = getDate()
     }
-    getDate()
+    renderDate()
+
     
-    return {loadPage, createTaskForm};
+    return {loadPage, createTaskForm, renderDate};
 
 })();
 
