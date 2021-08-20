@@ -90,6 +90,9 @@ html {
     justify-content: space-evenly;
 }
 
+.complete {
+    background-color: green;
+}
 
 /* INBOX */
 

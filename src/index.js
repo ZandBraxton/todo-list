@@ -9,25 +9,52 @@ function getDate() {
 }
 
 
-const test = {
-    title:"name", desc:"description here", dueDate:"05/16/2021", priority:"2"
-}
-
-const test2 = {
-    title:"name", desc:"description here", dueDate:"8/19/2021", priority:"2"
-}
-const tasks = [test, test2]
-
 class taskFactory {
-    constructor(title, desc, dueDate, priority) {
-        this.title = title
-        this.desc = desc
-        const date = format(new Date(dueDate), 'P')
+    constructor(name, dueDate, priority) {
+        this.name = name
+        //converts date to correct time
+        const utcDate = new Date(dueDate)
+        const utcDateOnly = new Date(utcDate.valueOf() + utcDate.getTimezoneOffset() * 60 * 1000)
+        const date = format(new Date(utcDateOnly), 'MM/dd/yyyy')
         this.dueDate = date
         this.priority = priority
-        this.complete = false
+        this.bool = false
+    }
+    
+    getName() {
+        return this.name
+    }
+
+    getDate() {
+        return this.dueDate
+    }
+
+    reName(name) {
+        this.name = name
+    }
+    
+    complete() {
+        if (this.bool === false) {
+            this.bool = true  
+        } else {
+            this.bool = false
+        }
     }
 }
+const test = new taskFactory("Dishes", "2021-08-20", "1")
+
+const test2 = new taskFactory("Laundry", "2021-05-16", "2")
+
+const test3 = new taskFactory("Vacuum", "2021-05-17", "2")
+
+let tasks = [test, test2, test3]
+
+
+
+
+
+console.log(tasks)
+
 
 const domWriter = (() => {
     const main = document.querySelector('.main')
@@ -46,6 +73,7 @@ const domWriter = (() => {
     }
 
     function renderList(tasks, id) {
+        appLogic.sortbyPrior()
         const list = document.querySelector('.list')
         while (list.firstChild) {
             list.removeChild(list.lastChild)
@@ -54,10 +82,11 @@ const domWriter = (() => {
             for (let obj in tasks) {
                 let task = document.createElement('div')
                 task.classList.add('task-list')
-                createTaskContent(task, tasks, obj, 'title')
-                createTaskContent(task, tasks, obj, 'desc')
+                createChecker(task)
+                createTaskContent(task, tasks, obj, 'name')
                 createTaskContent(task, tasks, obj, 'dueDate')
                 createTaskContent(task, tasks, obj, 'priority')
+                createDelete(task, list)
                 list.appendChild(task)
             }
         } else if (id === "Today") {
@@ -66,10 +95,11 @@ const domWriter = (() => {
                 if (tasks[obj]['dueDate'] === time) {
                     let task = document.createElement('div')
                     task.classList.add('task-list')
-                    createTaskContent(task, tasks, obj, 'title')
-                    createTaskContent(task, tasks, obj, 'desc')
+                    createChecker(task)
+                    createTaskContent(task, tasks, obj, 'name')
                     createTaskContent(task, tasks, obj, 'dueDate')
                     createTaskContent(task, tasks, obj, 'priority')
+                    createDelete(task, list)
                     list.appendChild(task)
                 }
                 
@@ -89,8 +119,60 @@ const domWriter = (() => {
     function createTaskContent(task, tasks, obj, key) {
         let content = document.createElement('div')
         content.classList.add('task-item')
-        content.textContent = tasks[obj][key]  
+        if (key === 'priority') {
+            switch (tasks[obj][key]) {
+                case "1":
+                    content.textContent = "Low"  
+                    break;
+                case "2":
+                    content.textContent = "Med"   
+                    break;
+                case "3":
+                    content.textContent = "High"
+                    break;  
+            }
+        } else {
+            content.textContent = tasks[obj][key]  
+        }
         task.appendChild(content)
+    }
+
+    function createChecker(element) {
+        const button = document.createElement('button')
+        button.classList.add('checker')
+        button.textContent= "Hello"
+        button.addEventListener('click', () => {
+            checkTask(element, button)
+        })
+        element.appendChild(button)
+    }
+
+    function createDelete(element, list) {
+        const button = document.createElement('button')
+        button.classList.add('delete')
+        button.textContent= "Delete"
+        button.addEventListener('click', () => {
+            deleteTask(element, list)
+        })
+        element.appendChild(button)
+    }
+
+    function checkTask(element, button) {
+       const index = element.children[1].textContent
+       const object = tasks.find((task) => task.getName() === index)
+       object.complete()
+       console.log(object)
+       if (object.bool === true) {
+            button.classList.add('complete')
+       } else {
+           button.classList.remove('complete')
+       }
+    }
+
+    function deleteTask(element, list) {
+        const index = element.children[1].textContent
+        tasks = tasks.filter((task) => task.name !== index)
+        renderList(tasks, main.id)
     }
        
     
@@ -101,8 +183,7 @@ const domWriter = (() => {
             return
         }
         const form = document.createElement('form')
-        createInput("Title", 'text', form)
-        createInput("Description", 'text', form)
+        createInput("Name", 'text', form)
         createInput("Date", 'date', form)
         createPriority(form)
         createInput("Submit", 'submit', form)
@@ -130,14 +211,16 @@ const domWriter = (() => {
     }
 
     function createPriority(element) {
-        const values = [1, 2, 3, 4, 5]
+        let i = 1
+        const values = ["Low", "Med", "High"]
         const dropdown = document.createElement('select')
         dropdown.name = "Priority"
         for (const val of values) {
             const option = document.createElement('option')
-            option.value = val
+            option.value = i
             option.text = val
             dropdown.appendChild(option)
+            i++
         }
         element.appendChild(dropdown)
     }
@@ -182,13 +265,20 @@ const appLogic = (() => {
         let newTask = new taskFactory(
             form.elements[0].value,
             form.elements[1].value, 
-            form.elements[2].value, 
-            form.elements[3].value)
+            form.elements[2].value)
             tasks.push(newTask)
+            sortbyPrior()
+            console.log(tasks)
+    }
+
+    function sortbyPrior() {
+        tasks.sort(function (a, b) {
+            return b['priority'] - a['priority']
+        })
     }
 
     //temp for testing
-    return {switchTab, appendTask};
+    return {switchTab, appendTask, sortbyPrior};
 })();
 
 
