@@ -1,6 +1,7 @@
 import './style.css';
-
 import format from 'date-fns/format';
+import {saveList, getList} from './modules/storage'
+import taskFactory from './modules/taskfactory'
 
 function getDate() {
     const timeElapsed = Date.now()
@@ -8,52 +9,11 @@ function getDate() {
     return today
 }
 
-
-class taskFactory {
-    constructor(name, dueDate, priority) {
-        this.name = name
-        //converts date to correct time
-        const utcDate = new Date(dueDate)
-        const utcDateOnly = new Date(utcDate.valueOf() + utcDate.getTimezoneOffset() * 60 * 1000)
-        const date = format(new Date(utcDateOnly), 'MM/dd/yyyy')
-        this.dueDate = date
-        this.priority = priority
-        this.bool = false
-    }
-    
-    getName() {
-        return this.name
-    }
-
-    getDate() {
-        return this.dueDate
-    }
-
-    reName(name) {
-        this.name = name
-    }
-    
-    complete() {
-        if (this.bool === false) {
-            this.bool = true  
-        } else {
-            this.bool = false
-        }
-    }
-}
-const test = new taskFactory("Dishes", "2021-08-20", "1")
-
-const test2 = new taskFactory("Laundry", "2021-05-16", "2")
-
-const test3 = new taskFactory("Vacuum", "2021-05-17", "2")
-
-let tasks = [test, test2, test3]
+let tasks = []
+// console.log(getList(tasks))
+getList(tasks)
 
 
-
-
-
-console.log(tasks)
 
 
 const domWriter = (() => {
@@ -147,12 +107,12 @@ const domWriter = (() => {
         element.appendChild(button)
     }
 
-    function createDelete(element, list) {
+    function createDelete(element) {
         const button = document.createElement('button')
         button.classList.add('delete')
         button.textContent= "Delete"
         button.addEventListener('click', () => {
-            deleteTask(element, list)
+            deleteTask(element)
         })
         element.appendChild(button)
     }
@@ -162,6 +122,7 @@ const domWriter = (() => {
        const object = tasks.find((task) => task.getName() === index)
        object.complete()
        console.log(object)
+       saveList(tasks)
        if (object.bool === true) {
             button.classList.add('complete')
        } else {
@@ -169,9 +130,10 @@ const domWriter = (() => {
        }
     }
 
-    function deleteTask(element, list) {
+    function deleteTask(element) {
         const index = element.children[1].textContent
         tasks = tasks.filter((task) => task.name !== index)
+        saveList(tasks)
         renderList(tasks, main.id)
     }
        
@@ -262,13 +224,14 @@ const appLogic = (() => {
     })
 
     function appendTask(form) {
-        let newTask = new taskFactory(
-            form.elements[0].value,
-            form.elements[1].value, 
-            form.elements[2].value)
+        let newTask = new taskFactory({
+            name: form.elements[0].value,
+            dueDate: form.elements[1].value, 
+            priority: form.elements[2].value})
             tasks.push(newTask)
             sortbyPrior()
             console.log(tasks)
+            saveList(tasks)
     }
 
     function sortbyPrior() {
@@ -280,6 +243,9 @@ const appLogic = (() => {
     //temp for testing
     return {switchTab, appendTask, sortbyPrior};
 })();
+
+
+
 
 
 
