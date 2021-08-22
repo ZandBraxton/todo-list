@@ -1,7 +1,7 @@
 import format from "date-fns/format"
 
 export default class taskFactory {
-    constructor({name, dueDate, priority}) {
+    constructor({name, dueDate, priority, bool}) {
         this.name = name
         //converts date to correct time
         const utcDate = new Date(dueDate)
@@ -9,7 +9,7 @@ export default class taskFactory {
         const date = format(new Date(utcDateOnly), 'MM/dd/yyyy')
         this.dueDate = date
         this.priority = priority
-        this.bool = false
+        this.bool = bool
     }
     
     getName() {

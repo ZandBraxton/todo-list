@@ -6,7 +6,6 @@ function saveList(data) {
 }
 
 function getList(tasks) {
-    console.log(JSON.parse(localStorage.getItem('tasks') || "[]"))
     const storedTasks =  JSON.parse(localStorage.getItem('tasks'))
     for (let i = 0; i < storedTasks.length; i++) {
         let task = new taskFactory(storedTasks[i])

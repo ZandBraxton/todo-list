@@ -42,11 +42,12 @@ const domWriter = (() => {
             for (let obj in tasks) {
                 let task = document.createElement('div')
                 task.classList.add('task-list')
-                createChecker(task)
+                const button = createCheckBtn(task)
                 createTaskContent(task, tasks, obj, 'name')
                 createTaskContent(task, tasks, obj, 'dueDate')
                 createTaskContent(task, tasks, obj, 'priority')
                 createDelete(task, list)
+                appLogic.checkBtnListen(task, button)
                 list.appendChild(task)
             }
         } else if (id === "Today") {
@@ -55,11 +56,12 @@ const domWriter = (() => {
                 if (tasks[obj]['dueDate'] === time) {
                     let task = document.createElement('div')
                     task.classList.add('task-list')
-                    createChecker(task)
+                    const button = createCheckBtn(task)
                     createTaskContent(task, tasks, obj, 'name')
                     createTaskContent(task, tasks, obj, 'dueDate')
                     createTaskContent(task, tasks, obj, 'priority')
                     createDelete(task, list)
+                    appLogic.checkBtnListen(task, button)
                     list.appendChild(task)
                 }
                 
@@ -97,38 +99,24 @@ const domWriter = (() => {
         task.appendChild(content)
     }
 
-    function createChecker(element) {
+    function createCheckBtn(element) {
         const button = document.createElement('button')
         button.classList.add('checker')
-        button.textContent= "Hello"
-        button.addEventListener('click', () => {
-            checkTask(element, button)
-        })
+        button.textContent= "Check"
         element.appendChild(button)
+        return button
     }
+
 
     function createDelete(element) {
-        const button = document.createElement('button')
-        button.classList.add('delete')
-        button.textContent= "Delete"
-        button.addEventListener('click', () => {
-            deleteTask(element)
-        })
-        element.appendChild(button)
-    }
-
-    function checkTask(element, button) {
-       const index = element.children[1].textContent
-       const object = tasks.find((task) => task.getName() === index)
-       object.complete()
-       console.log(object)
-       saveList(tasks)
-       if (object.bool === true) {
-            button.classList.add('complete')
-       } else {
-           button.classList.remove('complete')
-       }
-    }
+            const button = document.createElement('button')
+            button.classList.add('delete')
+            button.textContent= "Delete"
+            button.addEventListener('click', () => {
+                deleteTask(element)
+            })
+            element.appendChild(button)
+        }
 
     function deleteTask(element) {
         const index = element.children[1].textContent
@@ -137,7 +125,6 @@ const domWriter = (() => {
         renderList(tasks, main.id)
     }
        
-    
 
     function createTaskForm() {
         let checkForm = document.querySelector('form')
@@ -227,7 +214,8 @@ const appLogic = (() => {
         let newTask = new taskFactory({
             name: form.elements[0].value,
             dueDate: form.elements[1].value, 
-            priority: form.elements[2].value})
+            priority: form.elements[2].value,
+            bool: false})
             tasks.push(newTask)
             sortbyPrior()
             console.log(tasks)
@@ -240,8 +228,28 @@ const appLogic = (() => {
         })
     }
 
+    function checkBtnListen(element, button) {
+        const index = element.children[1].textContent
+        const object = tasks.find((task) => task.getName() === index)
+        button.addEventListener('click', () => {
+            object.complete()
+            saveList(tasks)
+            checkTask(object, button)
+        })
+        checkTask(object, button)
+        
+    }
+
+    function checkTask(object, button) {
+        if (object.bool === true) {
+                button.classList.add('complete')
+        } else {
+            button.classList.remove('complete')
+        }
+    }
+
     //temp for testing
-    return {switchTab, appendTask, sortbyPrior};
+    return {switchTab, appendTask, sortbyPrior, checkBtnListen};
 })();
 
 
