@@ -1,7 +1,8 @@
 import './style.css';
 import format from 'date-fns/format';
-import {saveList, getList} from './modules/storage'
+import {saveList, getList, saveProject, getProjects} from './modules/storage'
 import taskFactory from './modules/taskfactory'
+import projectFactory from './modules/projectfactory'
 
 function getDate() {
     const timeElapsed = Date.now()
@@ -10,8 +11,10 @@ function getDate() {
 }
 
 let tasks = []
+let projects = []
 // console.log(getList(tasks))
 getList(tasks)
+getProjects(projects)
 
 
 
@@ -113,25 +116,20 @@ const domWriter = (() => {
             button.classList.add('delete')
             button.textContent= "Delete"
             button.addEventListener('click', () => {
-                deleteTask(element)
+                appLogic.deleteTask(element)
+                renderList(tasks, main.id)
             })
             element.appendChild(button)
         }
-
-    function deleteTask(element) {
-        const index = element.children[1].textContent
-        tasks = tasks.filter((task) => task.name !== index)
-        saveList(tasks)
-        renderList(tasks, main.id)
-    }
        
 
     function createTaskForm() {
-        let checkForm = document.querySelector('form')
+        let checkForm = document.querySelector('.task-form')
         if (!!checkForm) {
             return
         }
         const form = document.createElement('form')
+        form.classList.add('task-form')
         createInput("Name", 'text', form)
         createInput("Date", 'date', form)
         createPriority(form)
@@ -147,6 +145,25 @@ const domWriter = (() => {
         
     }
 
+    function createProjectForm() {
+        let checkForm = document.querySelector('.project-form')
+        if (!!checkForm) {
+            return
+        }
+        const form = document.createElement('form')
+        form.classList.add('project-form')
+        createInput("Name", 'text', form)
+        createInput("Submit", 'submit', form)
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            appLogic.appendProject(form)
+            // renderList(tasks, main.id)
+            main.removeChild(form)
+                
+        })
+        main.appendChild(form)
+    }
+
     function createInput(name, type, element) {
         const input = document.createElement("input")
         // input.required = true
@@ -154,7 +171,7 @@ const domWriter = (() => {
         input.name = name
         input.placeholder = name
         if (name === "Submit") {
-            input.value = "Add Task"
+            input.value = "Confirm"
         }
         element.appendChild(input)
     }
@@ -182,7 +199,7 @@ const domWriter = (() => {
     renderDate()
 
     
-    return {loadPage, createTaskForm, renderDate};
+    return {loadPage, createTaskForm, createProjectForm, renderDate, renderList};
 
 })();
 
@@ -205,9 +222,14 @@ const appLogic = (() => {
         domWriter.loadPage(id)
     }
 
-    const addBtn = document.querySelector('.add-task')
-    addBtn.addEventListener('click', () => {
+    const addTaskBtn = document.querySelector('.add-task')
+    addTaskBtn.addEventListener('click', () => {
         domWriter.createTaskForm()
+    })
+
+    const addProjectBtn = document.querySelector('.add-project')
+    addProjectBtn.addEventListener('click', () => {
+       domWriter.createProjectForm()
     })
 
     function appendTask(form) {
@@ -220,6 +242,13 @@ const appLogic = (() => {
             sortbyPrior()
             console.log(tasks)
             saveList(tasks)
+    }
+
+    function appendProject(form) {
+        let newProject = new projectFactory({
+            name: form.elements[0].value})
+        projects.push(newProject)
+        saveProject(projects)
     }
 
     function sortbyPrior() {
@@ -248,8 +277,14 @@ const appLogic = (() => {
         }
     }
 
+    function deleteTask(element) {
+        const index = element.children[1].textContent
+        tasks = tasks.filter((task) => task.name !== index)
+        saveList(tasks)
+    }
+
     //temp for testing
-    return {switchTab, appendTask, sortbyPrior, checkBtnListen};
+    return {switchTab, appendTask, appendProject, sortbyPrior, checkBtnListen, deleteTask};
 })();
 
 

@@ -67,6 +67,11 @@ html {
     font-weight: 800;
 }
 
+.projects {
+    font-size: 32px;
+    font-weight: 100;
+    margin: 20px 0px 0px 40px;
+}
 
 .add-project {
     margin: 20px 0px 0px 40px;

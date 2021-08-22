@@ -26,7 +26,7 @@ export default class taskFactory {
     
     complete() {
         if (this.bool === false) {
-            this.bool = true  
+            this.bool = true
         } else {
             this.bool = false
         }
