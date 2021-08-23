@@ -16,10 +16,31 @@ let projects = []
 getList(tasks)
 getProjects(projects)
 
-
+console.log(tasks)
+console.log(projects)
 
 
 const domWriter = (() => {
+
+const sidebarProject = document.querySelector('.projects')
+
+function renderSidebar() {
+    while (sidebarProject.firstChild) {
+        sidebarProject.removeChild(sidebarProject.lastChild)
+    }
+    for (let obj in projects) {
+        let sidebarProjectChild = document.createElement('div')
+        sidebarProjectChild.id = projects[obj]['name']
+        sidebarProjectChild.classList.add('sidebar-project')
+        sidebarProjectChild.classList.add('sidebar-items')
+        sidebarProjectChild.textContent = projects[obj]['name']
+        sidebarProject.appendChild(sidebarProjectChild)
+    }
+}
+renderSidebar()
+
+
+
     const main = document.querySelector('.main')
     function loadPage(id) {
         if (main.id === id) {
@@ -41,15 +62,18 @@ const domWriter = (() => {
         while (list.firstChild) {
             list.removeChild(list.lastChild)
         }
+        console.log(id)
         if (id === "Inbox") {
             for (let obj in tasks) {
                 let task = document.createElement('div')
                 task.classList.add('task-list')
                 const button = createCheckBtn(task)
+                console.log(tasks[obj]['name'])
                 createTaskContent(task, tasks, obj, 'name')
                 createTaskContent(task, tasks, obj, 'dueDate')
                 createTaskContent(task, tasks, obj, 'priority')
-                createDelete(task, list)
+                createDeleteBtn(task)
+                createAddToProjectBtn(task)
                 appLogic.checkBtnListen(task, button)
                 list.appendChild(task)
             }
@@ -63,21 +87,28 @@ const domWriter = (() => {
                     createTaskContent(task, tasks, obj, 'name')
                     createTaskContent(task, tasks, obj, 'dueDate')
                     createTaskContent(task, tasks, obj, 'priority')
-                    createDelete(task, list)
+                    createDeleteBtn(task)
                     appLogic.checkBtnListen(task, button)
                     list.appendChild(task)
                 }
                 
             }
         } else {
-            const time = getDate()
             for (let obj in tasks) {
-                
-                //if statement if time is within a week of the current date
-                let task = document.createElement('div')
-                task.textContent = tasks[obj]['dueDate']
-                list.appendChild(task)
+                console.log(tasks[obj]['project'])
+                if (tasks[obj]['project'] === id) {
+                    let task = document.createElement('div')
+                    task.classList.add('task-list')
+                    const button = createCheckBtn(task)
+                    createTaskContent(task, tasks, obj, 'name')
+                    createTaskContent(task, tasks, obj, 'dueDate')
+                    createTaskContent(task, tasks, obj, 'priority')
+                    createDeleteBtn(task)
+                    appLogic.checkBtnListen(task, button)
+                    list.appendChild(task)
+                }
             }
+               
         }
     }
 
@@ -111,16 +142,46 @@ const domWriter = (() => {
     }
 
 
-    function createDelete(element) {
+    function createDeleteBtn(element) {
             const button = document.createElement('button')
             button.classList.add('delete')
-            button.textContent= "Delete"
+            button.textContent = "Delete"
             button.addEventListener('click', () => {
                 appLogic.deleteTask(element)
                 renderList(tasks, main.id)
             })
             element.appendChild(button)
         }
+
+    function createAddToProjectBtn(element) {
+        const button = document.createElement('button')
+        button.classList.add('add-to-project')
+        button.textContent = "Add To Project"
+        button.addEventListener('click', () => {
+            let values = []
+            for (let obj in projects) {
+                values.push(projects[obj]['name'])
+            }
+            let checkForm = document.querySelector('.add-task-to-project-form')
+            if (!!checkForm) {
+                return
+            }
+            const form = document.createElement('form')
+            form.classList.add('add-task-to-project-form')
+            createDropdown(form, values)
+            createInput("Submit", 'submit', form)
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                appLogic.addToProject(form, element)
+                main.removeChild(form)
+                    
+            })
+            main.appendChild(form)
+
+
+        })
+        element.appendChild(button)
+    }
        
 
     function createTaskForm() {
@@ -132,7 +193,8 @@ const domWriter = (() => {
         form.classList.add('task-form')
         createInput("Name", 'text', form)
         createInput("Date", 'date', form)
-        createPriority(form)
+        const values = ["Low", "Med", "High"]
+        createDropdown(form, values)
         createInput("Submit", 'submit', form)
         form.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -176,11 +238,9 @@ const domWriter = (() => {
         element.appendChild(input)
     }
 
-    function createPriority(element) {
+    function createDropdown(element, values) {
         let i = 1
-        const values = ["Low", "Med", "High"]
         const dropdown = document.createElement('select')
-        dropdown.name = "Priority"
         for (const val of values) {
             const option = document.createElement('option')
             option.value = i
@@ -199,7 +259,7 @@ const domWriter = (() => {
     renderDate()
 
     
-    return {loadPage, createTaskForm, createProjectForm, renderDate, renderList};
+    return {loadPage, createTaskForm, createProjectForm, renderDate, renderList, renderSidebar};
 
 })();
 
@@ -237,7 +297,12 @@ const appLogic = (() => {
             name: form.elements[0].value,
             dueDate: form.elements[1].value, 
             priority: form.elements[2].value,
-            bool: false})
+            bool: false,
+            project: ''})
+            if (tasks.find((task) => task.getName().toUpperCase() === newTask.getName().toUpperCase())) {
+                alert("Cannot enter task with same name")
+                return
+            } 
             tasks.push(newTask)
             sortbyPrior()
             console.log(tasks)
@@ -247,8 +312,13 @@ const appLogic = (() => {
     function appendProject(form) {
         let newProject = new projectFactory({
             name: form.elements[0].value})
+            if (projects.find((project) => project.getName().toUpperCase() === newProject.getName().toUpperCase())) {
+                alert("Cannot enter project with same name")
+                return
+            } 
         projects.push(newProject)
         saveProject(projects)
+        domWriter.renderSidebar()
     }
 
     function sortbyPrior() {
@@ -283,8 +353,25 @@ const appLogic = (() => {
         saveList(tasks)
     }
 
+    function addToProject(form, element) {
+        const select = form.firstChild
+        const name = select.children[form.elements[0].value - 1].textContent
+        const index = element.children[1].textContent
+        const object = tasks.find((task) => task.getName() === index)
+        object.addToProject(name)
+        saveList(tasks)
+    }
+
     //temp for testing
-    return {switchTab, appendTask, appendProject, sortbyPrior, checkBtnListen, deleteTask};
+    return {
+        switchTab, 
+        appendTask, 
+        appendProject, 
+        sortbyPrior, 
+        checkBtnListen, 
+        deleteTask,
+        addToProject
+    };
 })();
 
 
