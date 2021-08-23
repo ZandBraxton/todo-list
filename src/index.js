@@ -34,6 +34,7 @@ function renderSidebar() {
         sidebarProjectChild.classList.add('sidebar-project')
         sidebarProjectChild.classList.add('sidebar-items')
         sidebarProjectChild.textContent = projects[obj]['name']
+        createDeleteProjectBtn(sidebarProjectChild)
         sidebarProject.appendChild(sidebarProjectChild)
     }
 }
@@ -153,6 +154,22 @@ renderSidebar()
             element.appendChild(button)
         }
 
+    function createDeleteProjectBtn(element) {
+        const button = document.createElement('button')
+        button.classList.add('delete-project')
+        button.textContent = "Delete"
+        button.addEventListener('click', (e) => {
+            e.stopPropagation()
+            appLogic.deleteProject(element)
+            renderSidebar()   
+            console.log(element.id)
+            if (element.id === main.id) {
+                appLogic.switchTab("Inbox")
+            }
+        }, true)
+        element.appendChild(button)
+    }
+
     function createAddToProjectBtn(element) {
         const button = document.createElement('button')
         button.classList.add('add-to-project')
@@ -264,20 +281,27 @@ renderSidebar()
 })();
 
 
-const appLogic = (() => {
-    const sideBar = document.querySelectorAll('.sidebar-items')
-    sideBar.forEach(item => {
-        item.addEventListener('click', () => {
-            let id = item.id
-            switchTab(id)
+const appLogic = (() => { 
+   
+    function bindSidebar() {
+        const sideBar = document.querySelectorAll('.sidebar-items')
+        sideBar.forEach(item => {
+            item.addEventListener('click', () => {
+                let id = item.id
+                switchTab(id)
+            })
         })
-    })
+   } 
+   bindSidebar()
 
     function switchTab(id) {
         const activeBtn = document.querySelector('.active')
         if (activeBtn) activeBtn.classList.remove('active')
 
-        const tab = document.getElementById(id)
+        let tab = document.getElementById(id)
+        if (tab === null) {
+            tab = document.getElementById("Inbox")
+        }
         tab.classList.add('active')
         domWriter.loadPage(id)
     }
@@ -319,6 +343,7 @@ const appLogic = (() => {
         projects.push(newProject)
         saveProject(projects)
         domWriter.renderSidebar()
+        bindSidebar()
     }
 
     function sortbyPrior() {
@@ -362,6 +387,12 @@ const appLogic = (() => {
         saveList(tasks)
     }
 
+    function deleteProject(element) {
+        const index = element.id
+        projects = projects.filter((project) => project.name !== index)
+        saveProject(projects)
+    }
+
     //temp for testing
     return {
         switchTab, 
@@ -370,7 +401,8 @@ const appLogic = (() => {
         sortbyPrior, 
         checkBtnListen, 
         deleteTask,
-        addToProject
+        addToProject,
+        deleteProject
     };
 })();
 
