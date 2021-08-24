@@ -23,7 +23,7 @@ browse other libraries from npm
 store each task in an array
 allow users to check off a task (done)
 allow users to delete the task from the array (done)
-allow users to move it to projects, which create their own array 
+
 
 get rid of desc
 have a clickable option to bring up notes

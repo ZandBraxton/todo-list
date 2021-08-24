@@ -74,7 +74,7 @@ renderSidebar()
                     createTaskContent(task, tasks, obj, 'name')
                     createTaskContent(task, tasks, obj, 'dueDate')
                     createTaskContent(task, tasks, obj, 'priority')
-                    createDeleteBtn(task)
+                    createTaskMenu(task)
                     appLogic.checkBtnListen(task, button)
                     list.appendChild(task)
                 }
@@ -90,8 +90,7 @@ renderSidebar()
                     createTaskContent(task, tasks, obj, 'name')
                     createTaskContent(task, tasks, obj, 'dueDate')
                     createTaskContent(task, tasks, obj, 'priority')
-                    createDeleteBtn(task)
-                    createAddToProjectBtn(task)
+                    createTaskMenu(task)
                     appLogic.checkBtnListen(task, button)
                     list.appendChild(task)
                 }
@@ -129,8 +128,33 @@ renderSidebar()
         return button
     }
 
+    function createRenameBtn(element, dropdown) {
+        const button = document.createElement('button')
+        button.classList.add('rename')
+        button.textContent = "Rename"
+        button.addEventListener('click', () => {
+            let checkForm = document.querySelector('.rename-form')
+            if (!!checkForm) {
+                return
+            }
+            const form = document.createElement('form')
+            form.classList.add('rename-form')
+            createInput("Name", 'text', form)
+            createInput("Submit", 'submit', form)
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                appLogic.renameTask(form, element)
+                renderList(tasks, main.id)
+                main.removeChild(form)
+                    
+            })
+            main.appendChild(form)
+        })
+        dropdown.appendChild(button)
+    }
 
-    function createDeleteBtn(element) {
+
+    function createDeleteBtn(element, dropdown) {
             const button = document.createElement('button')
             button.classList.add('delete')
             button.textContent = "Delete"
@@ -138,7 +162,7 @@ renderSidebar()
                 appLogic.deleteTask(element)
                 renderList(tasks, main.id)
             })
-            element.appendChild(button)
+            dropdown.appendChild(button)
         }
 
     function createDeleteProjectBtn(element) {
@@ -157,7 +181,7 @@ renderSidebar()
         element.appendChild(button)
     }
 
-    function createAddToProjectBtn(element) {
+    function createAddToProjectBtn(element, dropdown) {
         const button = document.createElement('button')
         button.classList.add('add-to-project')
         button.textContent = "Add To Project"
@@ -185,7 +209,7 @@ renderSidebar()
 
 
         })
-        element.appendChild(button)
+        dropdown.appendChild(button)
     }
        
 
@@ -256,6 +280,33 @@ renderSidebar()
         element.appendChild(dropdown)
     }
 
+    function createTaskMenu(element) {
+        const menu = document.createElement('div')
+        const figure = document.createElement('figure')
+        menu.appendChild(figure)
+
+        const middle = document.createElement('figure')
+        middle.classList.add('menu-middle')
+        menu.appendChild(middle)
+
+        const cross = document.createElement('p')
+        cross.classList.add('menu-cross')
+        cross.textContent = "X"
+        menu.appendChild(cross)
+
+        const figure2 = document.createElement('figure')
+        menu.appendChild(figure2)
+
+        const dropdown = document.createElement('ul')
+        dropdown.classList.add('menu-dropdown')
+        createRenameBtn(element, dropdown)
+        createAddToProjectBtn(element, dropdown)
+        createDeleteBtn(element, dropdown)
+
+        menu.appendChild(dropdown)
+        element.appendChild(menu)
+    }
+ 
 
     function renderDate() {
         const time = document.querySelector('.time')
@@ -360,6 +411,13 @@ const appLogic = (() => {
         }
     }
 
+    function renameTask(form, element) {
+        const index = element.children[1].textContent
+        const object = tasks.find((task) => task.getName() === index)
+        object.reName(form.elements[0].value)
+        console.log(object)
+    }
+
     function deleteTask(element) {
         const index = element.children[1].textContent
         tasks = tasks.filter((task) => task.name !== index)
@@ -394,7 +452,8 @@ const appLogic = (() => {
         appendTask, 
         appendProject, 
         sortbyPrior, 
-        checkBtnListen, 
+        checkBtnListen,
+        renameTask, 
         deleteTask,
         addToProject,
         deleteProject
