@@ -128,22 +128,25 @@ renderSidebar()
         return button
     }
 
-    function createRenameBtn(element, dropdown) {
+    function createEditBtn(element, dropdown) {
         const button = document.createElement('button')
-        button.classList.add('rename')
-        button.textContent = "Rename"
+        button.classList.add('edit')
+        button.textContent = "Edit"
         button.addEventListener('click', () => {
-            let checkForm = document.querySelector('.rename-form')
+            let checkForm = document.querySelector('.edit-form')
             if (!!checkForm) {
                 return
             }
             const form = document.createElement('form')
-            form.classList.add('rename-form')
+            form.classList.add('edit-form')
             createInput("Name", 'text', form)
+            createInput("Date", 'date', form)
+            const values = ["Low", "Med", "High"]
+            createDropdown(form, values)
             createInput("Submit", 'submit', form)
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
-                appLogic.renameTask(form, element)
+                appLogic.editTask(form, element)
                 renderList(tasks, main.id)
                 main.removeChild(form)
                     
@@ -225,12 +228,17 @@ renderSidebar()
         const values = ["Low", "Med", "High"]
         createDropdown(form, values)
         createInput("Submit", 'submit', form)
+        const remove = document.createElement('button')
+        remove.textContent = "Cancel"
+        form.appendChild(remove)
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             appLogic.appendTask(form)
             renderList(tasks, main.id)
+            main.removeChild(form)       
+        })
+        remove.addEventListener('click', () => {
             main.removeChild(form)
-                
         })
         main.appendChild(form)
         
@@ -257,7 +265,7 @@ renderSidebar()
 
     function createInput(name, type, element) {
         const input = document.createElement("input")
-        // input.required = true
+        input.required = true
         input.type = type
         input.name = name
         input.placeholder = name
@@ -299,7 +307,7 @@ renderSidebar()
 
         const dropdown = document.createElement('ul')
         dropdown.classList.add('menu-dropdown')
-        createRenameBtn(element, dropdown)
+        createEditBtn(element, dropdown)
         createAddToProjectBtn(element, dropdown)
         createDeleteBtn(element, dropdown)
 
@@ -411,11 +419,13 @@ const appLogic = (() => {
         }
     }
 
-    function renameTask(form, element) {
+    function editTask(form, element) {
         const index = element.children[1].textContent
         const object = tasks.find((task) => task.getName() === index)
-        object.reName(form.elements[0].value)
-        console.log(object)
+        object.changeName(form.elements[0].value)
+        object.changeDate(form.elements[1].value)
+        object.changePriority(form.elements[2].value)
+        saveList(tasks)
     }
 
     function deleteTask(element) {
@@ -453,7 +463,7 @@ const appLogic = (() => {
         appendProject, 
         sortbyPrior, 
         checkBtnListen,
-        renameTask, 
+        editTask, 
         deleteTask,
         addToProject,
         deleteProject

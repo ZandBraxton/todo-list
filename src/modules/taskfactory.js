@@ -25,8 +25,19 @@ export default class taskFactory {
         return this.project
     }
 
-    reName(name) {
+    changeName(name) {
         this.name = name
+    }
+
+    changeDate(dueDate) {
+        const utcDate = new Date(dueDate)
+        const utcDateOnly = new Date(utcDate.valueOf() + utcDate.getTimezoneOffset() * 60 * 1000)
+        const date = format(new Date(utcDateOnly), 'MM/dd/yyyy')
+        this.dueDate = date
+    }
+    
+    changePriority (priority) {
+        this.priority = priority
     }
 
     addToProject(project) {
