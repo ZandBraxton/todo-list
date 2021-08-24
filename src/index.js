@@ -49,12 +49,25 @@ renderSidebar()
         }
         main.id = id
         createHeader(id)
+        createDesc(id)
         renderList(tasks, id)
     };
 
     function createHeader(id) {
         const title = document.querySelector('.title')
         title.textContent = id
+    }
+
+    function createDesc(id) {
+        const object = projects.find((project) => project.getName() === id)
+        const desc = document.querySelector('.desc')
+        if (id === "Inbox" || id === "Today" || id === "Upcoming") {
+            desc.textContent = ''
+            return
+        } else {
+            desc.textContent = object.desc
+        }
+        
     }
 
     function renderList(tasks, id) {
@@ -144,6 +157,7 @@ renderSidebar()
             const values = ["Low", "Med", "High"]
             createDropdown(form, values)
             createInput("Submit", 'submit', form)
+            cancelPrompt(form)
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
                 appLogic.editTask(form, element)
@@ -201,6 +215,7 @@ renderSidebar()
             form.classList.add('add-task-to-project-form')
             createDropdown(form, values)
             createInput("Submit", 'submit', form)
+            cancelPrompt(form)
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
                 appLogic.addToProject(form, element)
@@ -228,18 +243,14 @@ renderSidebar()
         const values = ["Low", "Med", "High"]
         createDropdown(form, values)
         createInput("Submit", 'submit', form)
-        const remove = document.createElement('button')
-        remove.textContent = "Cancel"
-        form.appendChild(remove)
+        cancelPrompt(form)
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             appLogic.appendTask(form)
             renderList(tasks, main.id)
             main.removeChild(form)       
         })
-        remove.addEventListener('click', () => {
-            main.removeChild(form)
-        })
+        
         main.appendChild(form)
         
     }
@@ -252,7 +263,9 @@ renderSidebar()
         const form = document.createElement('form')
         form.classList.add('project-form')
         createInput("Name", 'text', form)
+        createInput("Description", 'text', form)
         createInput("Submit", 'submit', form)
+        cancelPrompt(form)
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             appLogic.appendProject(form)
@@ -286,6 +299,15 @@ renderSidebar()
             i++
         }
         element.appendChild(dropdown)
+    }
+
+    function cancelPrompt(form) {
+        const remove = document.createElement('button')
+        remove.textContent = "Cancel"
+        remove.addEventListener('click', () => {
+            main.removeChild(form)
+        })
+        form.appendChild(remove)
     }
 
     function createTaskMenu(element) {
@@ -382,7 +404,8 @@ const appLogic = (() => {
 
     function appendProject(form) {
         let newProject = new projectFactory({
-            name: form.elements[0].value})
+            name: form.elements[0].value,
+            desc: form.elements[1].value})
             if (projects.find((project) => project.getName().toUpperCase() === newProject.getName().toUpperCase())) {
                 alert("Cannot enter project with same name")
                 return

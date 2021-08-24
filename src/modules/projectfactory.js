@@ -1,7 +1,8 @@
 export default class projectFactory {
-    constructor({name}) {
+    constructor({name, desc}) {
         this.name = name
         this.list = []
+        this.desc = desc
     }
 
     getName() {
@@ -10,5 +11,9 @@ export default class projectFactory {
 
     getList() {
         return this.list
+    }
+
+    changeName(name) {
+        this.name = name
     }
 }
