@@ -64,21 +64,7 @@ renderSidebar()
             list.removeChild(list.lastChild)
         }
         console.log(id)
-        if (id === "Inbox") {
-            for (let obj in tasks) {
-                let task = document.createElement('div')
-                task.classList.add('task-list')
-                const button = createCheckBtn(task)
-                console.log(tasks[obj]['name'])
-                createTaskContent(task, tasks, obj, 'name')
-                createTaskContent(task, tasks, obj, 'dueDate')
-                createTaskContent(task, tasks, obj, 'priority')
-                createDeleteBtn(task)
-                createAddToProjectBtn(task)
-                appLogic.checkBtnListen(task, button)
-                list.appendChild(task)
-            }
-        } else if (id === "Today") {
+        if (id === "Today") {
             const time = getDate()
             for (let obj in tasks) {
                 if (tasks[obj]['dueDate'] === time) {
@@ -105,6 +91,7 @@ renderSidebar()
                     createTaskContent(task, tasks, obj, 'dueDate')
                     createTaskContent(task, tasks, obj, 'priority')
                     createDeleteBtn(task)
+                    createAddToProjectBtn(task)
                     appLogic.checkBtnListen(task, button)
                     list.appendChild(task)
                 }
@@ -175,7 +162,7 @@ renderSidebar()
         button.classList.add('add-to-project')
         button.textContent = "Add To Project"
         button.addEventListener('click', () => {
-            let values = []
+            let values = ["Inbox"]
             for (let obj in projects) {
                 values.push(projects[obj]['name'])
             }
@@ -190,6 +177,7 @@ renderSidebar()
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
                 appLogic.addToProject(form, element)
+                renderList(tasks, main.id)
                 main.removeChild(form)
                     
             })
@@ -322,7 +310,7 @@ const appLogic = (() => {
             dueDate: form.elements[1].value, 
             priority: form.elements[2].value,
             bool: false,
-            project: ''})
+            project: "Inbox"})
             if (tasks.find((task) => task.getName().toUpperCase() === newTask.getName().toUpperCase())) {
                 alert("Cannot enter task with same name")
                 return
@@ -389,8 +377,15 @@ const appLogic = (() => {
 
     function deleteProject(element) {
         const index = element.id
+        console.log(index)
+        deleteTasksfromProject(index)
         projects = projects.filter((project) => project.name !== index)
         saveProject(projects)
+    }
+
+    function deleteTasksfromProject(index) {
+        tasks = tasks.filter((task) => task.project !== index)
+        saveList(tasks)
     }
 
     //temp for testing
