@@ -106,3 +106,12 @@ html {
     margin: 0px 0px 10px 48px;
     padding-top: 48px;
 }
+
+.notes {
+    position: absolute;
+    right: 0;
+    top: 500px;
+    background-color: green;
+    width: 300px;
+    height: 300px;
+}

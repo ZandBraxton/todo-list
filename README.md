@@ -25,7 +25,9 @@ allow users to check off a task (done)
 allow users to delete the task from the array (done)
  -->
 
-make project titles and desc be editable
+<!-- make project titles and desc be editable -->
+
+if there are no tasks in a project, display that there are no tasks to the user
 
 add notes in kabob menu to task, bringing up a separate note section thats saved in storage
 

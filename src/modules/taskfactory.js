@@ -1,7 +1,7 @@
 import format from "date-fns/format"
 
 export default class taskFactory {
-    constructor({name, dueDate, priority, bool, project}) {
+    constructor({name, dueDate, priority, bool, project, notes}) {
         this.name = name
         //converts date to correct time
         const utcDate = new Date(dueDate)
@@ -11,6 +11,7 @@ export default class taskFactory {
         this.priority = priority
         this.bool = bool
         this.project = project
+        this.notes = notes
     }
     
     getName() {
@@ -23,6 +24,10 @@ export default class taskFactory {
 
     getProject() {
         return this.project
+    }
+
+    getNotes() {
+        return this.notes
     }
 
     changeName(name) {
@@ -38,6 +43,9 @@ export default class taskFactory {
     
     changePriority (priority) {
         this.priority = priority
+    }
+    changeNotes (notes) {
+        this.notes = notes
     }
 
     addToProject(project) {

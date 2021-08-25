@@ -24,10 +24,6 @@ function compareDate(dueDate) {
     }
 }
 
-function withinWeek(duedate) {
-    
-}
-
 
 let tasks = []
 let projects = []
@@ -42,6 +38,7 @@ console.log(projects)
 const domWriter = (() => {
 
 const sidebarProject = document.querySelector('.projects')
+const noteDom = document.querySelector('.notes')
 
 function renderSidebar() {
     while (sidebarProject.firstChild) {
@@ -72,6 +69,7 @@ console.log(isThisWeek(timenow))
         createHeader(id)
         createDesc(id)
         renderList(tasks, id)
+        noteDom.textContent = ''
     };
 
     function createHeader(id) {
@@ -138,6 +136,9 @@ console.log(isThisWeek(timenow))
                     createTaskContent(task, tasks, obj, 'dueDate')
                     createTaskContent(task, tasks, obj, 'priority')
                     createTaskMenu(task)
+                    task.addEventListener('click', () => {
+                       appLogic.getNotes(task)
+                    })
                     appLogic.checkBtnListen(task, button)
                     list.appendChild(task)
                 }
@@ -403,6 +404,32 @@ console.log(isThisWeek(timenow))
         menu.appendChild(dropdown)
         element.appendChild(menu)
     }
+
+    function renderNotes(object) {
+        noteDom.textContent = object.getNotes()
+        const button = document.createElement('button')
+        button.textContent = "Edit Notes"
+        button.classList = "edit-note"
+        button.addEventListener('click', (e) => {
+            e.stopPropagation()
+            let checkForm = document.querySelector('.edit-form')
+            if (!!checkForm) {
+                return
+            }
+            const form = document.createElement('form')
+            form.classList.add('note-form')
+            createInput("Name", 'text', form)
+            createInput("Submit", 'submit', form)
+            cancelPrompt(form)
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                appLogic.editNotes(form, object)
+                main.removeChild(form)
+            })
+            main.appendChild(form)
+        })       
+        noteDom.appendChild(button)
+    }
  
 
     function renderDate() {
@@ -412,7 +439,14 @@ console.log(isThisWeek(timenow))
     renderDate()
 
     
-    return {loadPage, createTaskForm, createProjectForm, renderDate, renderList, renderSidebar};
+    return {
+        loadPage, 
+        createTaskForm, 
+        createProjectForm, 
+        renderDate, 
+        renderList,
+        renderNotes, 
+        renderSidebar};
 
 })();
 
@@ -458,7 +492,8 @@ const appLogic = (() => {
             dueDate: form.elements[1].value, 
             priority: form.elements[2].value,
             bool: false,
-            project: "Inbox"})
+            project: "Inbox",
+            notes: "No Notes to Display"})
             if (tasks.find((task) => task.getName().toUpperCase() === newTask.getName().toUpperCase())) {
                 alert("Cannot enter task with same name")
                 return
@@ -487,6 +522,19 @@ const appLogic = (() => {
         tasks.sort(function (a, b) {
             return b['priority'] - a['priority']
         })
+    }
+
+
+    function getNotes(element) {
+        const index = element.children[1].textContent
+        const object = tasks.find((task) => task.getName() === index)
+        domWriter.renderNotes(object)
+    }
+
+    function editNotes(form, object) {
+        object.changeNotes(form.elements[0].value)
+        saveList(tasks)
+        domWriter.renderNotes(object)
     }
 
     function checkBtnListen(element, button) {
@@ -568,13 +616,16 @@ const appLogic = (() => {
         tasks = tasks.filter((task) => task.project !== index)
         saveList(tasks)
     }
+    
 
     //temp for testing
     return {
         switchTab, 
         appendTask, 
         appendProject, 
-        sortbyPrior, 
+        sortbyPrior,
+        getNotes,
+        editNotes, 
         checkBtnListen,
         editTask, 
         deleteTask,
