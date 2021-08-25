@@ -1,5 +1,5 @@
 import './style.css';
-import format from 'date-fns/format';
+import {format, isThisWeek, compareAsc, addDays} from 'date-fns'
 import {saveList, getList, saveProject, getProjects} from './modules/storage'
 import taskFactory from './modules/taskfactory'
 import projectFactory from './modules/projectfactory'
@@ -9,6 +9,25 @@ function getDate() {
     const today = format(new Date(timeElapsed), 'P')
     return today
 }
+
+function compareDate(dueDate) {
+    let time = getDate()
+    let result = compareAsc(new Date(dueDate), new Date(time))
+    if (result === 1 || result === 0) {
+        let week = addDays(new Date(time), 7)
+        result = compareAsc(new Date(dueDate), week)
+        if (result === -1 || result === 0) {
+            return true
+        }
+    } else {
+        return false
+    }
+}
+
+function withinWeek(duedate) {
+    
+}
+
 
 let tasks = []
 let projects = []
@@ -40,7 +59,9 @@ function renderSidebar() {
 }
 renderSidebar()
 
-
+let timenow = getDate()
+console.log(timenow)
+console.log(isThisWeek(timenow))
 
     const main = document.querySelector('.main')
     function loadPage(id) {
@@ -93,9 +114,22 @@ renderSidebar()
                 }
                 
             }
+        } else if (id === "Upcoming") {
+            for (let obj in tasks) {
+                if (compareDate(tasks[obj]['dueDate']) === true) {
+                    let task = document.createElement('div')
+                    task.classList.add('task-list')
+                    const button = createCheckBtn(task)
+                    createTaskContent(task, tasks, obj, 'name')
+                    createTaskContent(task, tasks, obj, 'dueDate')
+                    createTaskContent(task, tasks, obj, 'priority')
+                    createTaskMenu(task)
+                    appLogic.checkBtnListen(task, button)
+                    list.appendChild(task)
+                }
+            }
         } else {
             for (let obj in tasks) {
-                console.log(tasks[obj]['project'])
                 if (tasks[obj]['project'] === id) {
                     let task = document.createElement('div')
                     task.classList.add('task-list')
