@@ -16,4 +16,7 @@ export default class projectFactory {
     changeName(name) {
         this.name = name
     }
+    changeDesc(desc) {
+        this.desc = desc
+    }
 }

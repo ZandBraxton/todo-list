@@ -53,7 +53,7 @@ function renderSidebar() {
         sidebarProjectChild.classList.add('sidebar-project')
         sidebarProjectChild.classList.add('sidebar-items')
         sidebarProjectChild.textContent = projects[obj]['name']
-        createDeleteProjectBtn(sidebarProjectChild)
+        createTaskMenu(sidebarProjectChild)
         sidebarProject.appendChild(sidebarProjectChild)
     }
 }
@@ -204,6 +204,33 @@ console.log(isThisWeek(timenow))
         dropdown.appendChild(button)
     }
 
+    function createEditProjectBtn(element, dropdown) {
+        const button = document.createElement('button')
+        button.classList.add('edit-project')
+        button.textContent = "Edit"
+        button.addEventListener('click', (e) => {
+            e.stopPropagation()
+            let checkForm = document.querySelector('.edit-form')
+            if (!!checkForm) {
+                return
+            }
+            const form = document.createElement('form')
+            form.classList.add('project-form')
+            createInput("Name", 'text', form)
+            createInput("Description", 'text', form)
+            createInput("Submit", 'submit', form)
+            cancelPrompt(form)
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                appLogic.editProject(form, element)
+                main.removeChild(form)
+                    
+            })
+            main.appendChild(form)
+        })
+        dropdown.appendChild(button)
+    }
+
 
     function createDeleteBtn(element, dropdown) {
             const button = document.createElement('button')
@@ -216,7 +243,7 @@ console.log(isThisWeek(timenow))
             dropdown.appendChild(button)
         }
 
-    function createDeleteProjectBtn(element) {
+    function createDeleteProjectBtn(element, dropdown) {
         const button = document.createElement('button')
         button.classList.add('delete-project')
         button.textContent = "Delete"
@@ -229,7 +256,7 @@ console.log(isThisWeek(timenow))
                 appLogic.switchTab("Inbox")
             }
         }, true)
-        element.appendChild(button)
+        dropdown.appendChild(button)
     }
 
     function createAddToProjectBtn(element, dropdown) {
@@ -363,9 +390,15 @@ console.log(isThisWeek(timenow))
 
         const dropdown = document.createElement('ul')
         dropdown.classList.add('menu-dropdown')
-        createEditBtn(element, dropdown)
-        createAddToProjectBtn(element, dropdown)
-        createDeleteBtn(element, dropdown)
+        if (element.classList.contains('task-list')) {
+            createEditBtn(element, dropdown)
+            createAddToProjectBtn(element, dropdown)
+            createDeleteBtn(element, dropdown)
+        } else {
+            createEditProjectBtn(element, dropdown)
+            createDeleteProjectBtn(element, dropdown)
+        }
+      
 
         menu.appendChild(dropdown)
         element.appendChild(menu)
@@ -477,6 +510,10 @@ const appLogic = (() => {
     }
 
     function editTask(form, element) {
+        if (tasks.find((task) => task.getName().toUpperCase() === form.elements[0].value.toUpperCase())) {
+            alert("Cannot enter task with same name")
+            return
+        }
         const index = element.children[1].textContent
         const object = tasks.find((task) => task.getName() === index)
         object.changeName(form.elements[0].value)
@@ -498,6 +535,25 @@ const appLogic = (() => {
         const object = tasks.find((task) => task.getName() === index)
         object.addToProject(name)
         saveList(tasks)
+    }
+
+    function editProject(form, element) {
+        if (projects.find((project) => project.getName().toUpperCase() === form.elements[0].value.toUpperCase())) {
+            alert("Cannot enter project with same name")
+            return
+        }
+        const index = element.id
+        const object = projects.find((project) => project.getName() === index)
+        object.changeName(form.elements[0].value)
+        object.changeDesc(form.elements[1].value)
+        const taskObject = tasks.find((task) => task.getProject() === index)
+        taskObject.addToProject(form.elements[0].value)
+        saveList(tasks)
+        saveProject(projects)
+        domWriter.renderSidebar()
+        bindSidebar()
+        switchTab(object.getName())
+
     }
 
     function deleteProject(element) {
@@ -523,6 +579,7 @@ const appLogic = (() => {
         editTask, 
         deleteTask,
         addToProject,
+        editProject,
         deleteProject
     };
 })();
