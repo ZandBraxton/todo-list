@@ -31,7 +31,7 @@ if there are no tasks in a project, display that there are no tasks to the user
 
 add notes in kabob menu to task, bringing up a separate note section thats saved in storage
 
-have a clickable option to bring up notes (need to do)
+<!-- have a clickable option to bring up notes (need to do) -->
 
 style the list as a grid
 
