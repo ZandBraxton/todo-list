@@ -29,6 +29,8 @@ allow users to delete the task from the array (done)
 
 if there are no tasks in a project, display that there are no tasks to the user
 
+on the side bar have a little number next to the project title stating how many tasks are in there
+
 add notes in kabob menu to task, bringing up a separate note section thats saved in storage
 
 <!-- have a clickable option to bring up notes (need to do) -->

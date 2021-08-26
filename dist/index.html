@@ -3,6 +3,8 @@
     <head>
         <title>Todo List</title>
         <meta charset="UTF-8">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
     </head>
     <body>
         <heading>
@@ -13,10 +15,19 @@
             </nav>
         </heading>
         <div class="sidebar-container">
-            <div id="Inbox" class="sidebar-items">Inbox</div>
-            <div id="Today" class="sidebar-items">Today</div>
-            <div id="Upcoming" class="sidebar-items">Upcoming</div>
-            <div id="Projects" class="projects">Projects</div>
+            <div id="Inbox" class="sidebar-items">
+                <span class="material-icons blue">inbox</span>
+                Inbox</div>
+            <div id="Today" class="sidebar-items">
+                <span class="material-icons red">calendar_today</span>
+                Today</div>
+            <div id="Upcoming" class="sidebar-items">
+                <span class="material-icons purple">date_range</span>
+                Upcoming</div>
+            <div class="project-header">
+                <span class="material-icons">assignment</span>
+                Projects</div>
+            <div id="Projects" class="projects"></div>
             <button class="add-project">Add Project</button>  
         </div>
         <div class="main">

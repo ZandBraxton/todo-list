@@ -11,7 +11,20 @@ html {
 
 *, *::before, *::after {
     box-sizing: inherit;
+    /* outline: 1px solid red */
 }
+
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;600&display=swap');
+
+.material-icons {
+    color: rgba(0, 0, 0, 0.56);
+    font-size: 1.6;
+}
+
+
+.material-icons.blue { color: #188be7; }
+.material-icons.red { color: #d82731; }
+.material-icons.purple { color: #a230cf; }
 
 
 
@@ -46,7 +59,7 @@ html {
 
 .sidebar-container {
     height: 100vh;
-    width: 450px;
+    width: 400px;
     outline: 1px solid red;
     position: absolute;
     display: flex;
@@ -54,17 +67,33 @@ html {
 }
 
 .sidebar-items {
-    font-size: 32px;
-    font-weight: 100;
-    margin: 20px 0px 0px 40px;
+    width: 20rem;
+    height: auto;
+    font-size: 1.8rem;
+    padding-left: 0.4em;
+    margin: 1.1em 0em 0em 1.5em;
+    font-family: 'Raleway', sans-serif;
+    /* outline: 1px solid red; */
 }
+
 
 .sidebar-items:hover {
     cursor: pointer;
+    background-color: rgba(219, 224, 224, 0.973);
+    border-radius: 20px;
 }
 
-.active {
+.tab-active {
     font-weight: 800;
+}
+
+.project-header {
+    width: 20rem;
+    height: auto;
+    font-size: 1.8rem;
+    padding-left: 0.4em;
+    margin: 2em 0em 0em 1.5em;
+    font-family: 'Raleway', sans-serif;
 }
 
 .projects {
@@ -82,7 +111,7 @@ html {
     outline: 1px solid red;
     width: 1200px;
     height: 100vh;
-    margin-left: 450px;
+    margin-left: 400px;
 }
 
 .list {
@@ -93,6 +122,7 @@ html {
     display: flex;
     margin: auto;
     justify-content: space-evenly;
+    position: relative;
 }
 
 .complete {
@@ -115,3 +145,70 @@ html {
     width: 300px;
     height: 300px;
 }
+
+
+.sidebar-project {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    background-color: green;
+    outline: 1px solid red
+    
+}
+
+.menu {
+    cursor: pointer;
+    /* padding-top: 6px;
+    width: 10px;
+    height: 10px; */
+    margin: 0;
+    outline: 1px solid red
+}
+/* 
+.menu:hover {
+    background-color: blue;
+} */
+/* 
+figure {
+    width: 6px;
+    height: 6px;
+    border-radius: 5px;
+    margin: 3px 0;
+    color: cyan;
+} */
+
+
+
+.menu-dropdown {
+    display: none;
+    flex-flow: row;
+    outline: 1px solid red;
+    margin: 0;
+    align-content: flex-start;
+    opacity: 100;
+    /* align-items: flex-start;
+    justify-content: flex-start;
+    align-content: flex-start; */
+    /* right: 0;
+    top: 3em; */
+    /* transition: all 0.25s ease-out; */
+    /* transform: scale(0); */
+    /* transform-origin: 100% 0; */
+    /* box-shadow: $shadow; */
+}
+
+.menu-dropdown button {
+    /* display: block;
+    width: 100px; */
+}
+
+.menu-dropdown.active {
+    display: block;
+    position: absolute;
+    opacity: 100;
+    right: 0;
+    /* height: 10px;
+    width: 10px; */
+    /* transform: scale(1); */
+    transition: all 0.25s cubic-bezier(.5,1.8,.9,.8);
+  }

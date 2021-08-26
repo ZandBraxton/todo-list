@@ -374,22 +374,25 @@ console.log(isThisWeek(timenow))
 
     function createTaskMenu(element) {
         const menu = document.createElement('div')
-        const figure = document.createElement('figure')
-        menu.appendChild(figure)
+        menu.textContent = "more_vert"
+        menu.classList.add('menu')
+        menu.classList.add('material-icons')
+        // const figure = document.createElement('figure')
+        // menu.appendChild(figure)
 
-        const middle = document.createElement('figure')
-        middle.classList.add('menu-middle')
-        menu.appendChild(middle)
+        // const middle = document.createElement('figure')
+        // middle.classList.add('menu-middle')
+        // menu.appendChild(middle)
 
-        const cross = document.createElement('p')
-        cross.classList.add('menu-cross')
-        cross.textContent = "X"
-        menu.appendChild(cross)
+        // const cross = document.createElement('p')
+        // cross.classList.add('menu-cross')
+        // // cross.textContent = "X"
+        // menu.appendChild(cross)
 
-        const figure2 = document.createElement('figure')
-        menu.appendChild(figure2)
+        // const figure2 = document.createElement('figure')
+        // menu.appendChild(figure2)
 
-        const dropdown = document.createElement('ul')
+        const dropdown = document.createElement('div')
         dropdown.classList.add('menu-dropdown')
         if (element.classList.contains('task-list')) {
             createEditBtn(element, dropdown)
@@ -399,10 +402,18 @@ console.log(isThisWeek(timenow))
             createEditProjectBtn(element, dropdown)
             createDeleteProjectBtn(element, dropdown)
         }
+
+        menu.addEventListener('click', (e) => {
+            e.stopPropagation()
+            // middle.classList.toggle('active')
+            // cross.classList.toggle('active')
+            dropdown.classList.toggle('active')
+
+        })
       
 
-        menu.appendChild(dropdown)
         element.appendChild(menu)
+        element.appendChild(dropdown)
     }
 
     function renderNotes(object) {
@@ -465,14 +476,14 @@ const appLogic = (() => {
    bindSidebar()
 
     function switchTab(id) {
-        const activeBtn = document.querySelector('.active')
-        if (activeBtn) activeBtn.classList.remove('active')
+        const activeBtn = document.querySelector('.tab-active')
+        if (activeBtn) activeBtn.classList.remove('tab-active')
 
         let tab = document.getElementById(id)
         if (tab === null) {
             tab = document.getElementById("Inbox")
         }
-        tab.classList.add('active')
+        tab.classList.add('tab-active')
         domWriter.loadPage(id)
     }
 
@@ -616,6 +627,7 @@ const appLogic = (() => {
         tasks = tasks.filter((task) => task.project !== index)
         saveList(tasks)
     }
+
     
 
     //temp for testing
