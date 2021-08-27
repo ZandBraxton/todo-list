@@ -55,6 +55,7 @@ function renderSidebar() {
         sidebarProjectContainer.classList.add('sidebar-items')
 
         let sidebarProjectChild = document.createElement('p')
+        sidebarProjectChild.id = projects[obj]['name']
         sidebarProjectChild.textContent = projects[obj]['name']
         sidebarProjectChild.classList.add('sidebar-item-name')
         sidebarProjectContainer.appendChild(sidebarProjectChild)
@@ -191,7 +192,7 @@ console.log(isThisWeek(timenow))
         button.classList.add('edit')
         button.textContent = "Edit"
         button.addEventListener('click', () => {
-            let checkForm = document.querySelector('.edit-form')
+            let checkForm = document.querySelector('form')
             if (!!checkForm) {
                 return
             }
@@ -221,7 +222,7 @@ console.log(isThisWeek(timenow))
         button.textContent = "Edit"
         button.addEventListener('click', (e) => {
             e.stopPropagation()
-            let checkForm = document.querySelector('.edit-form')
+            let checkForm = document.querySelector('form')
             if (!!checkForm) {
                 return
             }
@@ -279,7 +280,7 @@ console.log(isThisWeek(timenow))
             for (let obj in projects) {
                 values.push(projects[obj]['name'])
             }
-            let checkForm = document.querySelector('.add-task-to-project-form')
+            let checkForm = document.querySelector('form')
             if (!!checkForm) {
                 return
             }
@@ -304,7 +305,7 @@ console.log(isThisWeek(timenow))
        
 
     function createTaskForm() {
-        let checkForm = document.querySelector('.task-form')
+        let checkForm = document.querySelector('form')
         if (!!checkForm) {
             return
         }
@@ -328,7 +329,7 @@ console.log(isThisWeek(timenow))
     }
 
     function createProjectForm() {
-        let checkForm = document.querySelector('.project-form')
+        let checkForm = document.querySelector('form')
         if (!!checkForm) {
             return
         }
@@ -349,19 +350,30 @@ console.log(isThisWeek(timenow))
     }
 
     function createInput(name, type, element) {
-        const input = document.createElement("input")
+        const label = document.createElement('label')
+        const input = document.createElement('input')
+        label.textContent = name
+        label.classList.add('label')
         input.required = true
         input.type = type
         input.name = name
         input.placeholder = name
         if (name === "Submit") {
             input.value = "Confirm"
+            label.textContent = ''
         }
+        element.appendChild(label)
         element.appendChild(input)
     }
 
     function createDropdown(element, values) {
         let i = 1
+        const label = document.createElement('label')
+        if (values[0] === "Inbox") {
+            label.textContent = "Projects"
+        } else {
+            label.textContent = "Priority"
+        }
         const dropdown = document.createElement('select')
         for (const val of values) {
             const option = document.createElement('option')
@@ -370,6 +382,7 @@ console.log(isThisWeek(timenow))
             dropdown.appendChild(option)
             i++
         }
+        element.appendChild(label)
         element.appendChild(dropdown)
     }
 
@@ -433,7 +446,7 @@ console.log(isThisWeek(timenow))
         button.classList = "edit-note"
         button.addEventListener('click', (e) => {
             e.stopPropagation()
-            let checkForm = document.querySelector('.edit-form')
+            let checkForm = document.querySelector('form')
             if (!!checkForm) {
                 return
             }
@@ -616,8 +629,10 @@ const appLogic = (() => {
         object.changeName(form.elements[0].value)
         object.changeDesc(form.elements[1].value)
         const taskObject = tasks.find((task) => task.getProject() === index)
-        taskObject.addToProject(form.elements[0].value)
-        saveList(tasks)
+        if (taskObject) {
+            taskObject.addToProject(form.elements[0].value)
+            saveList(tasks)
+        }
         saveProject(projects)
         domWriter.renderSidebar()
         bindSidebar()
