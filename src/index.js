@@ -24,6 +24,10 @@ function compareDate(dueDate) {
     }
 }
 
+function transition(element) {
+    element.classList.add('show')
+}
+
 
 let tasks = []
 let projects = []
@@ -45,13 +49,19 @@ function renderSidebar() {
         sidebarProject.removeChild(sidebarProject.lastChild)
     }
     for (let obj in projects) {
-        let sidebarProjectChild = document.createElement('div')
-        sidebarProjectChild.id = projects[obj]['name']
-        sidebarProjectChild.classList.add('sidebar-project')
-        sidebarProjectChild.classList.add('sidebar-items')
+        let sidebarProjectContainer = document.createElement('div')
+        sidebarProjectContainer.id = projects[obj]['name']
+        sidebarProjectContainer.classList.add('sidebar-project')
+        sidebarProjectContainer.classList.add('sidebar-items')
+
+        let sidebarProjectChild = document.createElement('p')
         sidebarProjectChild.textContent = projects[obj]['name']
-        createTaskMenu(sidebarProjectChild)
-        sidebarProject.appendChild(sidebarProjectChild)
+        sidebarProjectChild.classList.add('sidebar-item-name')
+        sidebarProjectContainer.appendChild(sidebarProjectChild)
+
+        sidebarProjectChild.textContent = projects[obj]['name']
+        createTaskMenu(sidebarProjectContainer)
+        sidebarProject.appendChild(sidebarProjectContainer)
     }
 }
 renderSidebar()
@@ -377,23 +387,10 @@ console.log(isThisWeek(timenow))
         menu.textContent = "more_vert"
         menu.classList.add('menu')
         menu.classList.add('material-icons')
-        // const figure = document.createElement('figure')
-        // menu.appendChild(figure)
-
-        // const middle = document.createElement('figure')
-        // middle.classList.add('menu-middle')
-        // menu.appendChild(middle)
-
-        // const cross = document.createElement('p')
-        // cross.classList.add('menu-cross')
-        // // cross.textContent = "X"
-        // menu.appendChild(cross)
-
-        // const figure2 = document.createElement('figure')
-        // menu.appendChild(figure2)
 
         const dropdown = document.createElement('div')
         dropdown.classList.add('menu-dropdown')
+        dropdown.classList.add('transition-wrapper')
         if (element.classList.contains('task-list')) {
             createEditBtn(element, dropdown)
             createAddToProjectBtn(element, dropdown)
@@ -402,18 +399,31 @@ console.log(isThisWeek(timenow))
             createEditProjectBtn(element, dropdown)
             createDeleteProjectBtn(element, dropdown)
         }
-
         menu.addEventListener('click', (e) => {
             e.stopPropagation()
-            // middle.classList.toggle('active')
-            // cross.classList.toggle('active')
+            if (dropdown.classList.contains('active')) {
+                dropdown.classList.remove('show')
+                setTimeout(function () {dropdown.classList.remove('active')}, 300)
+            } else {
+                let openMenu = document.querySelectorAll('.active')
+                openMenu.forEach(menu => {
+                    menu.classList.remove('active')
+                    dropdown.classList.remove('show')
+                })
             dropdown.classList.toggle('active')
-
-        })
-      
-
+            setTimeout(function () {transition(dropdown)}, 100)
+            }
+        }) 
+        menu.appendChild(dropdown)
         element.appendChild(menu)
-        element.appendChild(dropdown)
+    }
+
+    window.onclick = () => {
+        let openMenu = document.querySelectorAll('.active')
+                openMenu.forEach(menu => {
+                    menu.classList.remove('active')
+                    menu.classList.remove('show')
+                })
     }
 
     function renderNotes(object) {
