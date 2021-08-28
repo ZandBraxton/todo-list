@@ -13,6 +13,10 @@ export default class projectFactory {
         return this.list
     }
 
+    pushTask(task) {
+        this.list.push(task)
+    }
+
     changeName(name) {
         this.name = name
     }

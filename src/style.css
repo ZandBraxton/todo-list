@@ -95,11 +95,20 @@ form input, select, button, label {
 }
 
 .sidebar-items {
+    display: flex;
+    flex-flow: row;
     width: 20rem;
     height: auto;
     font-size: 1.8rem;
-    padding-left: 0.4em;
     margin: 1.1em 0em 0em 1.5em;
+}
+
+.sidebar-items .material-icons {
+    margin-right: 0.4em;
+}
+
+.sidebar-counter {
+    margin: 0 1em 0 auto;
 }
 
 
@@ -143,7 +152,6 @@ form input, select, button, label {
 
 .list {
     position: relative;
-    outline: 1px solid red;
 }
 
 .col-name {
@@ -159,22 +167,35 @@ form input, select, button, label {
 }
 
 .task-list {
-    outline: 1px solid blue;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(auto-fit, 1fr);
     margin-bottom: 1em;
+    outline: 1px solid rgba(160, 159, 159, 0.56);
+    transition: all 0.1s;
+}
+
+.task-list:hover {
+    background-color: rgba(189, 187, 187, 0.56);
+    outline: 1px solid black;
 }
 
 .checker {
     margin: auto;
     width: 48px;
-    border: none;
+    height: auto;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.815);
 }
 
 .checker span {
     margin-top: 2px;
     font-size: 36px;
+}
+
+.checker:hover {
+    outline: 1px solid rgba(0, 0, 0, 0.56);
+    transition: none;
 }
 
 .task-item {
@@ -185,8 +206,12 @@ form input, select, button, label {
     font-size: 1.4rem;
 }
 
+.task-list .menu {
+   align-self: center;
+}
+
 .complete {
-    color: green;
+    color: rgb(19, 182, 19);
 }
 
 /* INBOX */
@@ -225,6 +250,18 @@ form input, select, button, label {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.project-counter {
+    color: white;
+    background-color: rgba(201, 49, 11, 0.781);
+    width: 36px;
+    height: 32px;
+    text-align: center;
+    font-size: 24px;
+    margin-right: 2em;
+    border-radius: 25%;
+    line-height: 30px;
 }
 
 .menu {

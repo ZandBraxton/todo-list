@@ -31,12 +31,10 @@ function transition(element) {
 
 let tasks = []
 let projects = []
-// console.log(getList(tasks))
 getList(tasks)
-getProjects(projects)
+getProjects(projects, tasks)
 
-console.log(tasks)
-console.log(projects)
+
 
 
 const domWriter = (() => {
@@ -49,6 +47,7 @@ function renderSidebar() {
         sidebarProject.removeChild(sidebarProject.lastChild)
     }
     for (let obj in projects) {
+        console.log(projects)
         let sidebarProjectContainer = document.createElement('div')
         sidebarProjectContainer.id = projects[obj]['name']
         sidebarProjectContainer.classList.add('sidebar-project')
@@ -60,16 +59,14 @@ function renderSidebar() {
         sidebarProjectChild.classList.add('sidebar-item-name')
         sidebarProjectContainer.appendChild(sidebarProjectChild)
 
+        createCounter(projects[obj], sidebarProjectContainer)
+
         sidebarProjectChild.textContent = projects[obj]['name']
         createTaskMenu(sidebarProjectContainer)
         sidebarProject.appendChild(sidebarProjectContainer)
     }
 }
 renderSidebar()
-
-let timenow = getDate()
-console.log(timenow)
-console.log(isThisWeek(timenow))
 
     const main = document.querySelector('.main')
     function loadPage(id) {
@@ -100,13 +97,29 @@ console.log(isThisWeek(timenow))
         
     }
 
+    function createCounter(name, element) {
+        console.log(name)
+        let i = 0;
+        for (let obj in name['list']) {
+            i++
+        }
+        let counter = document.createElement('p')
+        if (i === 0) {
+            counter.textContent = ''
+        } else {
+            counter.textContent = i
+            counter.classList.add('project-counter')
+        }
+        element.appendChild(counter)
+
+    }
+
     function renderList(tasks, id) {
         appLogic.sortbyPrior()
         const list = document.querySelector('.list')
         while (list.firstChild) {
             list.removeChild(list.lastChild)
         }
-        console.log(id)
         if (id === "Today") {
             const time = getDate()
             for (let obj in tasks) {
@@ -267,7 +280,6 @@ console.log(isThisWeek(timenow))
             e.stopPropagation()
             appLogic.deleteProject(element)
             renderSidebar()   
-            console.log(element.id)
             if (element.id === main.id) {
                 appLogic.switchTab("Inbox")
             }
@@ -297,6 +309,8 @@ console.log(isThisWeek(timenow))
                 e.preventDefault();
                 appLogic.addToProject(form, element)
                 renderList(tasks, main.id)
+                renderSidebar()
+                appLogic.bindSidebar()
                 main.removeChild(form)
                     
             })
@@ -346,7 +360,6 @@ console.log(isThisWeek(timenow))
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             appLogic.appendProject(form)
-            // renderList(tasks, main.id)
             main.removeChild(form)
                 
         })
@@ -541,7 +554,6 @@ const appLogic = (() => {
             } 
             tasks.push(newTask)
             sortbyPrior()
-            console.log(tasks)
             saveList(tasks)
     }
 
@@ -618,12 +630,21 @@ const appLogic = (() => {
     }
 
     function addToProject(form, element) {
-        const select = form.firstChild
+        const select = form.children[1]
         const name = select.children[form.elements[0].value - 1].textContent
         const index = element.children[1].textContent
         const object = tasks.find((task) => task.getName() === index)
+        console.log(name)
+        console.log(object)
         object.addToProject(name)
+        const project = projects.find((project) => project.getName() === name)
+        if (project === null) {
+            return
+        } else {
+            project.pushTask(object)
+        }
         saveList(tasks)
+        saveProject(projects)
     }
 
     function editProject(form, element) {
@@ -649,7 +670,6 @@ const appLogic = (() => {
 
     function deleteProject(element) {
         const index = element.id
-        console.log(index)
         deleteTasksfromProject(index)
         projects = projects.filter((project) => project.name !== index)
         saveProject(projects)
@@ -664,7 +684,8 @@ const appLogic = (() => {
 
     //temp for testing
     return {
-        switchTab, 
+        switchTab,
+        bindSidebar, 
         appendTask, 
         appendProject, 
         sortbyPrior,

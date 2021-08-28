@@ -18,10 +18,16 @@ function getList(tasks) {
     }
 }
 
-function getProjects(projects) {
+
+
+function getProjects(projects, tasks) {
     const storedProjects =  JSON.parse(localStorage.getItem('projects') || "[]")
     for (let i = 0; i < storedProjects.length; i++) {
         let project = new projectFactory(storedProjects[i])
+        for (let task in tasks) {
+            if (tasks[task]['project'] === project.getName())
+            project.pushTask(tasks[task])
+        }
         projects.push(project)
     }
 }
