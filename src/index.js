@@ -182,9 +182,13 @@ console.log(isThisWeek(timenow))
     function createCheckBtn(element) {
         const button = document.createElement('button')
         button.classList.add('checker')
-        button.textContent= "Check"
+        const span = document.createElement('span')
+        span.classList.add('material-icons')
+        span.textContent = "check_circle"
+        button.appendChild(span)
         element.appendChild(button)
         return button
+
     }
 
     function createEditBtn(element, dropdown) {
@@ -358,6 +362,9 @@ console.log(isThisWeek(timenow))
         input.type = type
         input.name = name
         input.placeholder = name
+        if (name === "Name") {
+            input.maxLength = "18"
+        }
         if (name === "Submit") {
             input.value = "Confirm"
             label.textContent = ''
@@ -585,9 +592,9 @@ const appLogic = (() => {
 
     function checkTask(object, button) {
         if (object.bool === true) {
-                button.classList.add('complete')
+            button.firstChild.classList.add('complete')
         } else {
-            button.classList.remove('complete')
+            button.firstChild.classList.remove('complete')
         }
     }
 

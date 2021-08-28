@@ -6,7 +6,7 @@ body {
 
 html {
     box-sizing: border-box;
-    font-family: sans-serif;
+    font-family: 'Raleway', sans-serif;
 }
 
 *, *::before, *::after {
@@ -27,6 +27,7 @@ form input, select, button, label {
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap');
 
 
 
@@ -99,7 +100,6 @@ form input, select, button, label {
     font-size: 1.8rem;
     padding-left: 0.4em;
     margin: 1.1em 0em 0em 1.5em;
-    font-family: 'Raleway', sans-serif;
 }
 
 
@@ -120,7 +120,6 @@ form input, select, button, label {
     font-weight: 600;
     padding-left: 0.4em;
     margin: 2em 0em 0em 1.5em;
-    font-family: 'Raleway', sans-serif;
 }
 
 .projects {
@@ -143,36 +142,71 @@ form input, select, button, label {
 }
 
 .list {
+    position: relative;
     outline: 1px solid red;
 }
 
+.col-name {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    margin-bottom: 1em;
+    font-weight: 600;
+    font-size: 1.4rem;
+}
+
+.col-name-item {
+    grid-column: 2;
+}
+
 .task-list {
-    display: flex;
+    outline: 1px solid blue;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(auto-fit, 1fr);
+    margin-bottom: 1em;
+}
+
+.checker {
     margin: auto;
-    justify-content: space-evenly;
-    position: relative;
+    width: 48px;
+    border: none;
+}
+
+.checker span {
+    margin-top: 2px;
+    font-size: 36px;
+}
+
+.task-item {
+    margin: auto;
+    width: 100%;
+    font-family: 'Lato', sans-serif;
+    font-weight: 400;
+    font-size: 1.4rem;
 }
 
 .complete {
-    background-color: green;
+    color: green;
 }
 
 /* INBOX */
 
 .title {
-    font-size: 64px;
-    margin: 0px 0px 10px 48px;
-    padding-top: 48px;
+    width: 100%;
+    font-size: 4rem;
+    margin: 0 auto auto 1em;
+    padding: 0.5em 0 0.3em 0;
+    font-weight: 600;
 }
 
-.notes {
+/* .notes {
     position: absolute;
     right: 0;
     top: 500px;
     background-color: green;
     width: 300px;
     height: 300px;
-}
+} */
 
 
 .sidebar-project {
