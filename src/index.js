@@ -269,6 +269,7 @@ renderSidebar()
                 e.preventDefault();
                 appLogic.editTask(form, element)
                 renderList(tasks, main.id)
+                mainCounter()
                 main.removeChild(form)
                     
             })
