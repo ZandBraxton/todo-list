@@ -17,6 +17,11 @@ export default class projectFactory {
         this.list.push(task)
     }
 
+    popTask(task) {
+        this.list.pop(task)
+    }
+    
+
     changeName(name) {
         this.name = name
     }

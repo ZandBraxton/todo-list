@@ -46,8 +46,8 @@ function renderSidebar() {
     while (sidebarProject.firstChild) {
         sidebarProject.removeChild(sidebarProject.lastChild)
     }
+    mainCounter()
     for (let obj in projects) {
-        console.log(projects)
         let sidebarProjectContainer = document.createElement('div')
         sidebarProjectContainer.id = projects[obj]['name']
         sidebarProjectContainer.classList.add('sidebar-project')
@@ -98,7 +98,6 @@ renderSidebar()
     }
 
     function createCounter(name, element) {
-        console.log(name)
         let i = 0;
         for (let obj in name['list']) {
             i++
@@ -112,6 +111,51 @@ renderSidebar()
         }
         element.appendChild(counter)
 
+    }
+
+    function mainCounter() {
+        const inbox = document.querySelector('.inbox-counter')
+        const today = document.querySelector('.today-counter')
+        const upcoming = document.querySelector('.upcoming-counter')
+
+        const time = getDate()
+        let inboxCounter = 0
+        let todayCounter = 0
+        let upcomingCounter = 0
+        for (let obj in tasks) {
+            if (tasks[obj]['project'] === "Inbox") {
+                inboxCounter++
+            }
+            if (tasks[obj]['dueDate'] === time) {
+                todayCounter++
+            }
+            if (compareDate(tasks[obj]['dueDate']) === true) {
+                upcomingCounter++
+            }
+        }
+
+        if (inboxCounter === 0) {
+            inbox.textContent = ''
+            inbox.classList.remove('project-counter')
+        } else {
+            inbox.textContent = inboxCounter
+            inbox.classList.add('project-counter')
+        }
+
+        if (todayCounter === 0) {
+            today.textContent = ''
+            today.classList.remove('project-counter')
+        } else {
+            today.textContent = todayCounter
+            today.classList.add('project-counter')
+        }
+        if (upcomingCounter === 0) {
+            upcoming.textContent = ''
+            upcoming.classList.remove('project-counter')
+        } else {
+            upcoming.textContent = upcomingCounter
+            upcoming.classList.add('project-counter')
+        }   
     }
 
     function renderList(tasks, id) {
@@ -268,6 +312,8 @@ renderSidebar()
             button.addEventListener('click', () => {
                 appLogic.deleteTask(element)
                 renderList(tasks, main.id)
+                renderSidebar()
+                appLogic.bindSidebar()
             })
             dropdown.appendChild(button)
         }
@@ -279,7 +325,7 @@ renderSidebar()
         button.addEventListener('click', (e) => {
             e.stopPropagation()
             appLogic.deleteProject(element)
-            renderSidebar()   
+            renderSidebar()  
             if (element.id === main.id) {
                 appLogic.switchTab("Inbox")
             }
@@ -339,6 +385,7 @@ renderSidebar()
             e.preventDefault();
             appLogic.appendTask(form)
             renderList(tasks, main.id)
+            mainCounter()
             main.removeChild(form)       
         })
         
@@ -491,6 +538,7 @@ renderSidebar()
         time.textContent = getDate()
     }
     renderDate()
+    
 
     
     return {
@@ -516,7 +564,6 @@ const appLogic = (() => {
             })
         })
    } 
-   bindSidebar()
 
     function switchTab(id) {
         const activeBtn = document.querySelector('.tab-active')
@@ -528,6 +575,7 @@ const appLogic = (() => {
         }
         tab.classList.add('tab-active')
         domWriter.loadPage(id)
+        bindSidebar()
     }
 
     const addTaskBtn = document.querySelector('.add-task')
@@ -625,8 +673,15 @@ const appLogic = (() => {
 
     function deleteTask(element) {
         const index = element.children[1].textContent
+        const object = tasks.find((task) => task.getName() === index)
+        const project = projects.find((project) => project.getName() === object.getProject())
+        console.log(typeof project)
+        if (typeof project != "undefined") {  
+            project.popTask(object)
+        }
         tasks = tasks.filter((task) => task.name !== index)
         saveList(tasks)
+        saveProject(projects)
     }
 
     function addToProject(form, element) {
@@ -634,8 +689,6 @@ const appLogic = (() => {
         const name = select.children[form.elements[0].value - 1].textContent
         const index = element.children[1].textContent
         const object = tasks.find((task) => task.getName() === index)
-        console.log(name)
-        console.log(object)
         object.addToProject(name)
         const project = projects.find((project) => project.getName() === name)
         if (project === null) {
@@ -680,6 +733,7 @@ const appLogic = (() => {
         saveList(tasks)
     }
 
+
     
 
     //temp for testing
@@ -696,7 +750,7 @@ const appLogic = (() => {
         deleteTask,
         addToProject,
         editProject,
-        deleteProject
+        deleteProject,
     };
 })();
 

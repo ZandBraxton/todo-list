@@ -107,7 +107,7 @@ form input, select, button, label {
     margin-right: 0.4em;
 }
 
-.sidebar-counter {
+.inbox-counter, .today-counter, .upcoming-counter {
     margin: 0 1em 0 auto;
 }
 
@@ -262,6 +262,7 @@ form input, select, button, label {
     margin-right: 2em;
     border-radius: 25%;
     line-height: 30px;
+    font-weight: 400;
 }
 
 .menu {
