@@ -40,7 +40,7 @@ getProjects(projects, tasks)
 const domWriter = (() => {
 
 const sidebarProject = document.querySelector('.projects')
-const noteDom = document.querySelector('.notes')
+const noteDom = document.createElement('div')
 
 function renderSidebar() {
     while (sidebarProject.firstChild) {
@@ -100,7 +100,9 @@ renderSidebar()
     function createCounter(name, element) {
         let i = 0;
         for (let obj in name['list']) {
-            i++
+            if (name['list'][obj]['bool'] === false) {
+                i++
+            }
         }
         let counter = document.createElement('p')
         if (i === 0) {
@@ -123,15 +125,18 @@ renderSidebar()
         let todayCounter = 0
         let upcomingCounter = 0
         for (let obj in tasks) {
-            if (tasks[obj]['project'] === "Inbox") {
-                inboxCounter++
+            if (tasks[obj]['bool'] === false) {
+                if (tasks[obj]['project'] === "Inbox") {
+                    inboxCounter++
+                }
+                if (tasks[obj]['dueDate'] === time) {
+                    todayCounter++
+                }
+                if (compareDate(tasks[obj]['dueDate']) === true) {
+                    upcomingCounter++
+                }
             }
-            if (tasks[obj]['dueDate'] === time) {
-                todayCounter++
-            }
-            if (compareDate(tasks[obj]['dueDate']) === true) {
-                upcomingCounter++
-            }
+           
         }
 
         if (inboxCounter === 0) {
@@ -507,7 +512,19 @@ renderSidebar()
                 })
     }
 
-    function renderNotes(object) {
+    function renderNotes(element, object) {
+        const activeNote = document.querySelector('.note-active')
+        if (element.classList.contains('note-active')) {
+                element.classList.toggle('note-active')
+                noteDom.remove()
+                return
+            } else {
+                if (!!activeNote) {
+                activeNote.classList.remove('note-active') 
+                }
+                element.classList.toggle('note-active')
+            }
+        noteDom.classList.add('notes')
         noteDom.textContent = object.getNotes()
         const button = document.createElement('button')
         button.textContent = "Edit Notes"
@@ -520,18 +537,25 @@ renderSidebar()
             }
             const form = document.createElement('form')
             form.classList.add('note-form')
-            createInput("Name", 'text', form)
+            createInput("Notes", 'text', form)
             createInput("Submit", 'submit', form)
             cancelPrompt(form)
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
-                appLogic.editNotes(form, object)
+                appLogic.editNotes(element, form, object)
                 main.removeChild(form)
             })
             main.appendChild(form)
         })       
         noteDom.appendChild(button)
+        element.appendChild(noteDom)
     }
+
+    // function clearNotes() {
+    //     document.querySelector('note-active') {
+
+    //     }
+    // }
  
 
     function renderDate() {
@@ -545,7 +569,8 @@ renderSidebar()
     return {
         loadPage, 
         createTaskForm, 
-        createProjectForm, 
+        createProjectForm,
+        mainCounter, 
         renderDate, 
         renderList,
         renderNotes, 
@@ -630,21 +655,24 @@ const appLogic = (() => {
     function getNotes(element) {
         const index = element.children[1].textContent
         const object = tasks.find((task) => task.getName() === index)
-        domWriter.renderNotes(object)
+        domWriter.renderNotes(element, object)
     }
 
-    function editNotes(form, object) {
+    function editNotes(element, form, object) {
         object.changeNotes(form.elements[0].value)
         saveList(tasks)
-        domWriter.renderNotes(object)
+        domWriter.renderNotes(element, object)
     }
 
     function checkBtnListen(element, button) {
         const index = element.children[1].textContent
         const object = tasks.find((task) => task.getName() === index)
+        const project = document.querySelector('.tab-active')
         button.addEventListener('click', () => {
             object.complete()
             saveList(tasks)
+            domWriter.renderSidebar()
+            switchTab(project.id)
             checkTask(object, button)
         })
         checkTask(object, button)

@@ -318,3 +318,32 @@ form input, select, button, label {
     position: absolute;
   }
 
+
+  .notes {
+    grid-column: 1 / span 3;
+    font-size: 1.4rem;
+    margin: 2em auto 0 6em;
+    padding-bottom: 0.6em;
+  }
+
+  .note-active {
+    margin-bottom: 2em;
+  }
+
+  .edit-note {
+    margin: 0px 1em 1em 0px;
+    position: absolute;
+    right: 0;
+    border-radius: 25px;
+    background-color: rgb(88, 87, 87);
+    color: white;
+    width: 10em;
+    transition: all 0.1s;
+    border: none;
+  }
+  .edit-note:hover {
+    background-color: rgba(255, 255, 255, 0.56);
+    color: black;
+    outline: 1px solid black; 
+    cursor: pointer;
+  }
