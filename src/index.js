@@ -688,7 +688,8 @@ const appLogic = (() => {
     }
 
     function editTask(form, element) {
-        if (tasks.find((task) => task.getName().toUpperCase() === form.elements[0].value.toUpperCase())) {
+        if (tasks.find((task) => task.getName().toUpperCase() === form.elements[0].value.toUpperCase()) 
+            && element.children[1].textContent.toUpperCase() !== form.elements[0].value.toUpperCase()) {
             alert("Cannot enter task with same name")
             return
         }
