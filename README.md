@@ -1,11 +1,11 @@
-# todo-list
+<!-- # todo-list
 
 each todo should have these properties
 Title (done)
 DueDate (done)
 Priority level (done)
 Notes
-Checklist (done, but could be improved so its more dynamic)
+Checklist (done, but could be improved so its more dynamic) -->
 <!-- 
 Main page should open to the main list of all todos lists, which are called projects
 users can create new projects, add todos to projects, choose when making a todo which project it will go into
@@ -27,9 +27,11 @@ allow users to delete the task from the array (done)
 
 <!-- make project titles and desc be editable -->
 
-if there are no tasks in a project, display that there are no tasks to the user
+<!-- if there are no tasks in a project, display that there are no tasks to the user -->
 <!-- display descriptions properly -->
-style the meny buttons
+<!-- style the meny buttons -->
+<!-- add more style to form -->
+
 
 <!-- on the side bar have a little number next to the project title stating how many tasks are in there -->
 
@@ -43,5 +45,3 @@ style the list as a grid -->
 have a way to put tasks in projects (done)
 have ability to delete projects, which delete all tasks in it (done) -->
 <!-- Have a description for projects (done) -->
-
-Move projectfactory to taskfactory and rename the file "factories"

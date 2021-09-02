@@ -4,12 +4,14 @@ import {saveList, getList, saveProject, getProjects} from './modules/storage'
 import taskFactory from './modules/taskfactory'
 import projectFactory from './modules/projectfactory'
 
+//get todays date
 function getDate() {
     const timeElapsed = Date.now()
     const today = format(new Date(timeElapsed), 'P')
     return today
 }
 
+//date comparison for calculations
 function compareDate(dueDate) {
     let time = getDate()
     let result = compareAsc(new Date(dueDate), new Date(time))
@@ -24,11 +26,12 @@ function compareDate(dueDate) {
     }
 }
 
+//transition effect
 function transition(element) {
     element.classList.add('show')
 }
 
-
+//get list
 let tasks = []
 let projects = []
 getList(tasks)
@@ -74,6 +77,10 @@ renderSidebar()
             return
         }
         main.id = id
+        let checkForm = document.querySelector('form')
+        if (!!checkForm) {
+            main.removeChild(checkForm)
+        }
         createHeader(id)
         createDesc(id)
         renderList(tasks, id)
@@ -114,14 +121,12 @@ renderSidebar()
             counter.classList.add('project-counter')
         }
         element.appendChild(counter)
-
     }
 
     function mainCounter() {
         const inbox = document.querySelector('.inbox-counter')
         const today = document.querySelector('.today-counter')
         const upcoming = document.querySelector('.upcoming-counter')
-
         const time = getDate()
         let inboxCounter = 0
         let todayCounter = 0
@@ -137,10 +142,8 @@ renderSidebar()
                 if (compareDate(tasks[obj]['dueDate']) === true) {
                     upcomingCounter++
                 }
-            }
-           
+            } 
         }
-
         if (inboxCounter === 0) {
             inbox.textContent = ''
             inbox.classList.remove('project-counter')
@@ -148,7 +151,6 @@ renderSidebar()
             inbox.textContent = inboxCounter
             inbox.classList.add('project-counter')
         }
-
         if (todayCounter === 0) {
             today.textContent = ''
             today.classList.remove('project-counter')
@@ -185,8 +187,7 @@ renderSidebar()
                     appLogic.checkBtnListen(task, button)
                     list.appendChild(task)
                 }
-                
-            }
+            } 
         } else if (id === "Upcoming") {
             for (let obj in tasks) {
                 if (compareDate(tasks[obj]['dueDate']) === true) {
@@ -217,8 +218,13 @@ renderSidebar()
                     appLogic.checkBtnListen(task, button)
                     list.appendChild(task)
                 }
-            }
+            } 
                
+        } if (list.children.length === 0) {
+            const empty = document.createElement('div')
+            empty.classList.add('empty')
+            empty.textContent = "No tasks to display"
+            list.appendChild(empty)
         }
     }
 
@@ -506,6 +512,7 @@ renderSidebar()
         element.appendChild(menu)
     }
 
+    //close menus if window is clicked
     window.onclick = () => {
         let openMenu = document.querySelectorAll('.active')
                 openMenu.forEach(menu => {
@@ -552,13 +559,6 @@ renderSidebar()
         noteDom.appendChild(button)
         element.appendChild(noteDom)
     }
-
-    // function clearNotes() {
-    //     document.querySelector('note-active') {
-
-    //     }
-    // }
- 
 
     function renderDate() {
         const time = document.querySelector('.time')
@@ -708,7 +708,6 @@ const appLogic = (() => {
         const index = element.children[1].textContent
         const object = tasks.find((task) => task.getName() === index)
         const project = projects.find((project) => project.getName() === object.getProject())
-        console.log(typeof project)
         if (typeof project != "undefined") {  
             project.popTask(object)
         }
@@ -768,10 +767,6 @@ const appLogic = (() => {
         saveList(tasks)
     }
 
-
-    
-
-    //temp for testing
     return {
         switchTab,
         bindSidebar, 
@@ -788,10 +783,5 @@ const appLogic = (() => {
         deleteProject,
     };
 })();
-
-
-
-
-
 
 appLogic.switchTab("Inbox")
