@@ -28,14 +28,16 @@ allow users to delete the task from the array (done)
 <!-- make project titles and desc be editable -->
 
 if there are no tasks in a project, display that there are no tasks to the user
+<!-- display descriptions properly -->
+style the meny buttons
 
-on the side bar have a little number next to the project title stating how many tasks are in there
+<!-- on the side bar have a little number next to the project title stating how many tasks are in there -->
 
-add notes in kabob menu to task, bringing up a separate note section thats saved in storage
+<!-- add notes in kabob menu to task, bringing up a separate note section thats saved in storage -->
 
 <!-- have a clickable option to bring up notes (need to do) -->
-
-style the list as a grid
+<!-- 
+style the list as a grid -->
 
 <!-- display projects on sidebar
 have a way to put tasks in projects (done)

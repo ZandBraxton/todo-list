@@ -88,9 +88,11 @@ renderSidebar()
     function createDesc(id) {
         const object = projects.find((project) => project.getName() === id)
         const desc = document.querySelector('.desc')
-        if (id === "Inbox" || id === "Today" || id === "Upcoming") {
+        if (id === "Inbox" || id === "Today") {
             desc.textContent = ''
             return
+        } else if (id === "Upcoming"){
+            desc.textContent = "Due within the next seven days"
         } else {
             desc.textContent = object.desc
         }
@@ -567,7 +569,8 @@ renderSidebar()
 
     
     return {
-        loadPage, 
+        loadPage,
+        createDesc, 
         createTaskForm, 
         createProjectForm,
         mainCounter, 
@@ -731,7 +734,8 @@ const appLogic = (() => {
     }
 
     function editProject(form, element) {
-        if (projects.find((project) => project.getName().toUpperCase() === form.elements[0].value.toUpperCase())) {
+        if (projects.find((project) => project.getName().toUpperCase() === form.elements[0].value.toUpperCase())
+            && element.id.toUpperCase() !== form.elements[0].value.toUpperCase()) {
             alert("Cannot enter project with same name")
             return
         }
@@ -748,6 +752,7 @@ const appLogic = (() => {
         domWriter.renderSidebar()
         bindSidebar()
         switchTab(object.getName())
+        domWriter.createDesc(object.getName())
 
     }
 

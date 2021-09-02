@@ -189,6 +189,8 @@ form input, select, button, label {
     margin-left: 500px;
 }
 
+
+
 .list {
     position: relative;
 }
@@ -262,6 +264,11 @@ form input, select, button, label {
     font-weight: 600;
 }
 
+.desc {
+    width: 100%;
+    margin: 0 0 2em 4.5em;
+    color: rgba(0, 0, 0, 0.911);
+}
 
 .sidebar-project {
     display: flex;
@@ -318,6 +325,32 @@ form input, select, button, label {
     position: absolute;
   }
 
+  .menu-dropdown button {
+    border-radius: 10px;
+    border: none;
+    background-color: rgb(88, 87, 87);
+    color: white;
+  }
+
+  .menu-dropdown button:hover {
+    background-color: rgb(255,255,255);
+    color:rgba(18, 18, 18, 1);
+    transition: all 0.3s;
+    cursor: pointer;
+    outline: 1px solid black;
+  }
+
+  .sidebar-items button {
+      margin-left:  1em;
+  }
+
+  .sidebar-items button:hover {
+    background-color: rgb(255,255,255);
+    color:rgba(18, 18, 18, 1);
+    transition: all 0.3s;
+    cursor: pointer; 
+    outline: none;
+  }
 
   .notes {
     grid-column: 1 / span 3;
@@ -347,3 +380,4 @@ form input, select, button, label {
     outline: 1px solid black; 
     cursor: pointer;
   }
+
