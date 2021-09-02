@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Todo List</title>
+        <meta charset="UTF-8">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    </head>
+    <body>
+        <heading>
+            <nav class="navbar">
+                <h1>TODO LIST</h1>
+                <div class="time"></div>
+                <button class="add-task">Add Task</button>
+            </nav>
+        </heading>
+        <div class="sidebar-container">
+            <div id="Inbox" class="sidebar-items">
+                <span class="material-icons blue">inbox</span>
+                Inbox
+                <p class='inbox-counter'></p>
+            </div>
+            <div id="Today" class="sidebar-items">
+                <span class="material-icons red">calendar_today</span>
+                Today
+                <p class='today-counter'></p>
+            </div>
+            <div id="Upcoming" class="sidebar-items">
+                <span class="material-icons purple">date_range</span>
+                Upcoming
+                <p class='upcoming-counter'></p>
+            </div>
+            <div class="project-header">
+                <span class="material-icons white">assignment</span>
+                Projects</div>
+            <div id="Projects" class="projects"></div>
+            <button class="add-project">Add Project</button>  
+        </div>
+        <div class="main">
+            <div class='title'></div>
+            <div class="desc"></div>
+            <div class="col-name">
+                <div class='col-name-item'>Name</div>
+                <div>Due Date</div>
+                <div>Priority</div>
+            </div>
+            <div class='list'></div>
+        </div>
+        <script src="main.js"></script>
+    </body>
+</html>
